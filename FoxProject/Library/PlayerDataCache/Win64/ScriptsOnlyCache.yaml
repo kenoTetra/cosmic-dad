@@ -1,10 +1,17 @@
 ScriptsOnlyBuild:
   usedScripts:
+    Assembly-CSharp.dll:
+    - PlayerBrain
+    - PlayerFollowObject
+    Cinemachine.dll:
+    - Cinemachine.CinemachineBrain
+    - Cinemachine.CinemachineFramingTransposer
+    - Cinemachine.CinemachinePipeline
+    - Cinemachine.CinemachineVirtualCamera
     Unity.2D.Animation.Editor.dll:
     - UnityEditor.U2D.Animation.BoneGizmo
     Unity.2D.IK.Editor.dll:
     - UnityEditor.U2D.IK.IKEditorManager
-    - UnityEditor.U2D.IK.IKGizmos
     Unity.2D.IK.Runtime.dll:
     - UnityEditor.U2D.IK.IKEditorManagerHelper
     Unity.2D.Tilemap.Editor.dll:
@@ -17,14 +24,14 @@ ScriptsOnlyBuild:
     - UnityEditor.Tilemaps.TilemapPrefabStageHelper
     Unity.Rider.Editor.dll:
     - Packages.Rider.Editor.UnitTesting.CallbackData
-    Unity.VisualScripting.Core.Editor.dll:
-    - Unity.VisualScripting.GraphWindow
+    Unity.TextMeshPro.dll:
+    - TMPro.TMP_FontAsset
+    - TMPro.TMP_Settings
+    - TMPro.TMP_SpriteAsset
+    - TMPro.TMP_StyleSheet
     Unity.VisualScripting.Core.dll:
     - Unity.VisualScripting.SceneVariables
     - Unity.VisualScripting.Variables
-    Unity.VisualScripting.Flow.dll:
-    - Unity.VisualScripting.FlowMachine
-    - Unity.VisualScripting.ScriptGraphAsset
     UnityEditor.Graphs.dll:
     - UnityEditor.Graphs.AnimationBlendTree.Graph
     - UnityEditor.Graphs.AnimationBlendTree.GraphGUI
@@ -35,6 +42,9 @@ ScriptsOnlyBuild:
     - UnityEditor.TestTools.TestRunner.Api.CallbacksHolder
     - UnityEditor.TestTools.TestRunner.TestListCacheData
     - UnityEditor.TestTools.TestRunner.TestRun.TestJobDataHolder
+    UnityEngine.UI.dll:
+    - UnityEngine.EventSystems.EventSystem
+    - UnityEngine.EventSystems.StandaloneInputModule
   sceneClasses:
     Assets/Scenes/Main.unity:
     - Class: 1
@@ -49,9 +59,13 @@ ScriptsOnlyBuild:
       Script: {instanceID: 0}
     - Class: 48
       Script: {instanceID: 0}
+    - Class: 49
+      Script: {instanceID: 0}
     - Class: 50
       Script: {instanceID: 0}
     - Class: 61
+      Script: {instanceID: 0}
+    - Class: 62
       Script: {instanceID: 0}
     - Class: 81
       Script: {instanceID: 0}
@@ -60,18 +74,44 @@ ScriptsOnlyBuild:
     - Class: 104
       Script: {instanceID: 0}
     - Class: 114
-      Script: {instanceID: 3732}
+      Script: {instanceID: 2320}
     - Class: 114
-      Script: {instanceID: 4160}
+      Script: {instanceID: 2774}
     - Class: 114
-      Script: {instanceID: 5468}
+      Script: {instanceID: 2844}
     - Class: 114
-      Script: {instanceID: 8874}
+      Script: {instanceID: 2916}
+    - Class: 114
+      Script: {instanceID: 2928}
+    - Class: 114
+      Script: {instanceID: 3930}
+    - Class: 114
+      Script: {instanceID: 4692}
+    - Class: 114
+      Script: {instanceID: 5018}
+    - Class: 114
+      Script: {instanceID: 5456}
+    - Class: 114
+      Script: {instanceID: 5896}
+    - Class: 114
+      Script: {instanceID: 6548}
+    - Class: 114
+      Script: {instanceID: 7176}
+    - Class: 114
+      Script: {instanceID: 7202}
+    - Class: 114
+      Script: {instanceID: 8822}
     - Class: 115
+      Script: {instanceID: 0}
+    - Class: 128
       Script: {instanceID: 0}
     - Class: 157
       Script: {instanceID: 0}
     - Class: 196
+      Script: {instanceID: 0}
+    - Class: 198
+      Script: {instanceID: 0}
+    - Class: 199
       Script: {instanceID: 0}
     - Class: 212
       Script: {instanceID: 0}
@@ -90,12 +130,6 @@ ScriptsOnlyBuild:
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.UI
     className: Image
-  - hash:
-      serializedVersion: 2
-      Hash: ad8b45d20f2d72b0743c886cdcd5b12c
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: Unity.VisualScripting.Generated.PropertyProviders
-    className: PropertyProvider_TMPro_TMP_Character
   - hash:
       serializedVersion: 2
       Hash: 61f2059db36c32396c3d12077855592b
@@ -176,12 +210,6 @@ ScriptsOnlyBuild:
     className: CinemachineCameraOffset
   - hash:
       serializedVersion: 2
-      Hash: 15d4b211fa5ba7db7a902ff14d6fc408
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: Unity.VisualScripting.Generated.PropertyProviders
-    className: PropertyProvider_TMPro_TMP_InputField_SubmitEvent
-  - hash:
-      serializedVersion: 2
       Hash: 6225eb0973ab0af667bc5f9d1b1b18de
     assemblyName: Cinemachine.dll
     namespaceName: Cinemachine
@@ -192,12 +220,6 @@ ScriptsOnlyBuild:
     assemblyName: Cinemachine.dll
     namespaceName: Cinemachine
     className: CinemachineBlenderSettings
-  - hash:
-      serializedVersion: 2
-      Hash: 845fda45c38b8d96c87c9d1f6954a74f
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: Unity.VisualScripting.Generated.PropertyProviders
-    className: PropertyProvider_Unity_Mathematics_quaternion
   - hash:
       serializedVersion: 2
       Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
@@ -308,6 +330,12 @@ ScriptsOnlyBuild:
     className: UnityOnCollisionEnterMessageListener
   - hash:
       serializedVersion: 2
+      Hash: 83e769eee07fc231384c812eedbb8224
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: PlayerFollowObject
+  - hash:
+      serializedVersion: 2
       Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
     assemblyName: Unity.VisualScripting.Core.dll
     namespaceName: Unity.VisualScripting
@@ -404,12 +432,6 @@ ScriptsOnlyBuild:
     className: CinemachineInputProvider
   - hash:
       serializedVersion: 2
-      Hash: 44bd2b5608de97146243165925f4b14d
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: Unity.VisualScripting.Generated.PropertyProviders
-    className: PropertyProvider_UnityEngine_UI_InputField_OnChangeEvent
-  - hash:
-      serializedVersion: 2
       Hash: c3d3430df9e3ea95e3e3d587961390fb
     assemblyName: Cinemachine.dll
     namespaceName: 
@@ -426,18 +448,6 @@ ScriptsOnlyBuild:
     assemblyName: Unity.VisualScripting.Core.dll
     namespaceName: Unity.VisualScripting
     className: UnityOnDropdownValueChangedMessageListener
-  - hash:
-      serializedVersion: 2
-      Hash: 7f0593cec5604720cdf0e68aa1934cce
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: Unity.VisualScripting.Generated.PropertyProviders
-    className: PropertyProvider_UnityEngine_UI_InputField_EndEditEvent
-  - hash:
-      serializedVersion: 2
-      Hash: 677adc6c948848d8dabd1929e2c876e5
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: Unity.VisualScripting.Generated.PropertyProviders
-    className: PropertyProvider_UnityEngine_UI_SpriteState
   - hash:
       serializedVersion: 2
       Hash: 0fd6822f6177297bd0eb4d83cc7a9030
@@ -494,12 +504,6 @@ ScriptsOnlyBuild:
     className: UnityOnScrollMessageListener
   - hash:
       serializedVersion: 2
-      Hash: b5a7ae8576757a0802ece531d1efeede
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: Unity.VisualScripting.Generated.PropertyProviders
-    className: PropertyProvider_UnityEngine_TextCore_Glyph
-  - hash:
-      serializedVersion: 2
       Hash: 8aa3d6ccbcb54ee8db6c1229854adaaa
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.UI
@@ -512,22 +516,10 @@ ScriptsOnlyBuild:
     className: CinemachineSmoothPath
   - hash:
       serializedVersion: 2
-      Hash: f31c465d1dc1a2d3fb07b1a9531f7c9e
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: Unity.VisualScripting.Generated.PropertyProviders
-    className: PropertyProvider_TMPro_TMP_Dropdown_OptionDataList
-  - hash:
-      serializedVersion: 2
       Hash: 2574ac7d50617d23cdefe4ad22f5e1ad
     assemblyName: Unity.VisualScripting.Core.dll
     namespaceName: Unity.VisualScripting
     className: VariablesAsset
-  - hash:
-      serializedVersion: 2
-      Hash: b6d628f4a0e7b128dd8b73939d7ed0c0
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: Unity.VisualScripting.Generated.PropertyProviders
-    className: PropertyProvider_TMPro_TextAlignmentOptions
   - hash:
       serializedVersion: 2
       Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
@@ -548,12 +540,6 @@ ScriptsOnlyBuild:
     className: UnityOnSelectMessageListener
   - hash:
       serializedVersion: 2
-      Hash: be7d4470fd51692b921f78246f76070e
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: Unity.VisualScripting.Generated.PropertyProviders
-    className: PropertyProvider_TMPro_TMP_Dropdown_DropdownEvent
-  - hash:
-      serializedVersion: 2
       Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
     assemblyName: UnityEngine.TestRunner.dll
     namespaceName: UnityEngine.TestTools.TestRunner.Callbacks
@@ -564,12 +550,6 @@ ScriptsOnlyBuild:
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.EventSystems
     className: BaseInput
-  - hash:
-      serializedVersion: 2
-      Hash: 1d85290bd092b65235b8cbb70abba180
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: Unity.VisualScripting.Generated.PropertyProviders
-    className: PropertyProvider_UnityEngine_UI_Toggle_ToggleEvent
   - hash:
       serializedVersion: 2
       Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
@@ -602,22 +582,10 @@ ScriptsOnlyBuild:
     className: AnimationTrack
   - hash:
       serializedVersion: 2
-      Hash: 8fb72891b25e8ef5f6f603b0fd299a5e
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: Unity.VisualScripting.Generated.PropertyProviders
-    className: PropertyProvider_UnityEngine_UI_Slider_SliderEvent
-  - hash:
-      serializedVersion: 2
       Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
     assemblyName: Unity.VisualScripting.Core.dll
     namespaceName: Unity.VisualScripting
     className: UnityOnCollisionExit2DMessageListener
-  - hash:
-      serializedVersion: 2
-      Hash: d19cc046f0c0887908a2700427db2e70
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: Unity.VisualScripting.Generated.PropertyProviders
-    className: PropertyProvider_UnityEngine_UI_FontData
   - hash:
       serializedVersion: 2
       Hash: cd1c93a552a813159175d818a844dc09
@@ -630,12 +598,6 @@ ScriptsOnlyBuild:
     assemblyName: Unity.VisualScripting.Flow.dll
     namespaceName: Unity.VisualScripting
     className: ScriptGraphAsset
-  - hash:
-      serializedVersion: 2
-      Hash: 1e2a38ff4f4ce3a932a0d7ba5787b457
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: Unity.VisualScripting.Generated.PropertyProviders
-    className: PropertyProvider_UnityEngine_UI_ScrollRect_ScrollRectEvent
   - hash:
       serializedVersion: 2
       Hash: a5781dc71a671b1ad2b38de19f24b71f
@@ -654,12 +616,6 @@ ScriptsOnlyBuild:
     assemblyName: Unity.VisualScripting.Core.dll
     namespaceName: Unity.VisualScripting
     className: UnityOnPointerExitMessageListener
-  - hash:
-      serializedVersion: 2
-      Hash: b79338a4189c328d9fd5cb167411f589
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: Unity.VisualScripting.Generated.PropertyProviders
-    className: PropertyProvider_UnityEngine_UI_MaskableGraphic_CullStateChangedEvent
   - hash:
       serializedVersion: 2
       Hash: aba7b2852ef61d175dd9602e7723d5e5
@@ -702,12 +658,6 @@ ScriptsOnlyBuild:
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
     className: SignalReceiver
-  - hash:
-      serializedVersion: 2
-      Hash: 876422b9f11011ca06d2bb8cf5e5d644
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: Unity.VisualScripting.Generated.PropertyProviders
-    className: PropertyProvider_TMPro_TMP_InputField_TouchScreenKeyboardEvent
   - hash:
       serializedVersion: 2
       Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
@@ -758,12 +708,6 @@ ScriptsOnlyBuild:
     className: UnityOnJointBreak2DMessageListener
   - hash:
       serializedVersion: 2
-      Hash: cb056ded083d318225b1fe2d1d4fd1d0
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: Unity.VisualScripting.Generated.PropertyProviders
-    className: PropertyProvider_TMPro_TMP_FontWeightPair
-  - hash:
-      serializedVersion: 2
       Hash: dbfb4270852b0008a423a7418d9de4cf
     assemblyName: Cinemachine.dll
     namespaceName: Cinemachine
@@ -780,12 +724,6 @@ ScriptsOnlyBuild:
     assemblyName: Cinemachine.dll
     namespaceName: Cinemachine
     className: GroupWeightManipulator
-  - hash:
-      serializedVersion: 2
-      Hash: 6824ca7621cfa734c435c7ae0eded7b7
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: Unity.VisualScripting.Generated.PropertyProviders
-    className: PropertyProvider_UnityEngine_TextCore_GlyphMetrics
   - hash:
       serializedVersion: 2
       Hash: 56df1fa7cea034df9863fe5a24200a32
@@ -816,12 +754,6 @@ ScriptsOnlyBuild:
     assemblyName: Unity.VisualScripting.Core.dll
     namespaceName: Unity.VisualScripting
     className: UnityOnCancelMessageListener
-  - hash:
-      serializedVersion: 2
-      Hash: 832e3bba2bddfc073afbb654802c34fb
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: Unity.VisualScripting.Generated.PropertyProviders
-    className: PropertyProvider_TMPro_TMP_SpriteGlyph
   - hash:
       serializedVersion: 2
       Hash: ab6a2fed0a3d86e42cbaa680bbf9bfac
@@ -864,12 +796,6 @@ ScriptsOnlyBuild:
     assemblyName: Unity.Postprocessing.Runtime.dll
     namespaceName: UnityEngine.Rendering.PostProcessing
     className: PostProcessVolume
-  - hash:
-      serializedVersion: 2
-      Hash: 2136f6ca4f0994747f2e3f93cfd1d4a3
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: Unity.VisualScripting.Generated.PropertyProviders
-    className: PropertyProvider_UnityEngine_TextCore_GlyphRect
   - hash:
       serializedVersion: 2
       Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
@@ -992,12 +918,6 @@ ScriptsOnlyBuild:
     className: HorizontalLayoutGroup
   - hash:
       serializedVersion: 2
-      Hash: 48b8eea157c519737e715c7165463bef
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: Unity.VisualScripting.Generated.PropertyProviders
-    className: PropertyProvider_TMPro_TMP_InputField_SelectionEvent
-  - hash:
-      serializedVersion: 2
       Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
     assemblyName: Unity.VisualScripting.Core.dll
     namespaceName: Unity.VisualScripting
@@ -1016,40 +936,10 @@ ScriptsOnlyBuild:
     className: Vignette
   - hash:
       serializedVersion: 2
-      Hash: 0411fc298a162f4786dfdac7d552e7d5
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: Unity.VisualScripting.Generated.PropertyProviders
-    className: PropertyProvider_UnityEngine_EventSystems_EventTrigger_TriggerEvent
-  - hash:
-      serializedVersion: 2
-      Hash: 8a11b2971784d10b2a14d7478d52dd80
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: Unity.VisualScripting.Generated.PropertyProviders
-    className: PropertyProvider_TMPro_TMP_InputField_TextSelectionEvent
-  - hash:
-      serializedVersion: 2
       Hash: f542c1afca5bb4022f91fdda19b8d622
     assemblyName: Unity.Postprocessing.Runtime.dll
     namespaceName: UnityEngine.Rendering.PostProcessing
     className: DepthOfField
-  - hash:
-      serializedVersion: 2
-      Hash: a136f647b8267e7015e4a2abdf742ed3
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: Unity.VisualScripting.Generated.PropertyProviders
-    className: PropertyProvider_Cinemachine_CinemachineBrain_BrainEvent
-  - hash:
-      serializedVersion: 2
-      Hash: 20cd1b787c1a6281a1a042f4bb1bd27f
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: Unity.VisualScripting.Generated.PropertyProviders
-    className: PropertyProvider_UnityEngine_ParticleSystem_MinMaxCurve
-  - hash:
-      serializedVersion: 2
-      Hash: b7cdfa658a4b791efad68dc1261fb648
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: Unity.VisualScripting.Generated.PropertyProviders
-    className: PropertyProvider_UnityEngine_UI_Navigation
   - hash:
       serializedVersion: 2
       Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
@@ -1064,12 +954,6 @@ ScriptsOnlyBuild:
     className: PanelEventHandler
   - hash:
       serializedVersion: 2
-      Hash: b80e8020144a801951d132d28694ea2d
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: Unity.VisualScripting.Generated.PropertyProviders
-    className: PropertyProvider_Unity_Mathematics_bool2
-  - hash:
-      serializedVersion: 2
       Hash: 15882a52798c275361cd0a3ada984ec5
     assemblyName: Cinemachine.dll
     namespaceName: Cinemachine
@@ -1080,12 +964,6 @@ ScriptsOnlyBuild:
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
     className: GroupTrack
-  - hash:
-      serializedVersion: 2
-      Hash: ab532f1d7b816a97476de9b9d0b73e6f
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: Unity.VisualScripting.Generated.PropertyProviders
-    className: PropertyProvider_UnityEngine_ParticleSystem_MinMaxGradient
   - hash:
       serializedVersion: 2
       Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
@@ -1130,22 +1008,10 @@ ScriptsOnlyBuild:
     className: CinemachineBrain
   - hash:
       serializedVersion: 2
-      Hash: c6b3111e9a90ad2b19feec9e8c889120
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: Unity.VisualScripting.Generated.PropertyProviders
-    className: PropertyProvider_Unity_Mathematics_bool2x2
-  - hash:
-      serializedVersion: 2
       Hash: a1aa98c78061c6f03a8c124cda576e67
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.UI
     className: CanvasScaler
-  - hash:
-      serializedVersion: 2
-      Hash: ff3d5152170c158ff322c992b415b8ac
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: Unity.VisualScripting.Generated.PropertyProviders
-    className: PropertyProvider_UnityEngine_UI_AnimationTriggers
   - hash:
       serializedVersion: 2
       Hash: df21ffd1864551a3e43410f28754a73e
@@ -1190,24 +1056,6 @@ ScriptsOnlyBuild:
     className: TextMeshProUGUI
   - hash:
       serializedVersion: 2
-      Hash: 3caec10202fdf693aa41e11571b4b68b
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: Unity.VisualScripting.Generated.PropertyProviders
-    className: PropertyProvider_TMPro_TMP_GlyphPairAdjustmentRecord
-  - hash:
-      serializedVersion: 2
-      Hash: b6d628f4a0e7b128dd8b73939d7ed0c0
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: Unity.VisualScripting.Generated.PropertyProviders
-    className: PropertyProvider_TMPro_VerticalAlignmentOptions
-  - hash:
-      serializedVersion: 2
-      Hash: a5c33ee3dd56c9f34c6a9a278c7d76aa
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: Unity.VisualScripting.Generated.PropertyProviders
-    className: PropertyProvider_Cinemachine_CinemachineBrain_VcamActivatedEvent
-  - hash:
-      serializedVersion: 2
       Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
     assemblyName: Unity.VisualScripting.Core.dll
     namespaceName: Unity.VisualScripting
@@ -1232,10 +1080,10 @@ ScriptsOnlyBuild:
     className: TMP_SubMesh
   - hash:
       serializedVersion: 2
-      Hash: 88a3b5b4eb98b3c507b584ee199e5905
+      Hash: 301c913f39455a6952e2a90a4fdb5ecb
     assemblyName: Assembly-CSharp.dll
-    namespaceName: Unity.VisualScripting.Generated.PropertyProviders
-    className: PropertyProvider_UnityEngine_UI_ColorBlock
+    namespaceName: 
+    className: PlayerBrain
   - hash:
       serializedVersion: 2
       Hash: c3d3430df9e3ea95e3e3d587961390fb
@@ -1254,12 +1102,6 @@ ScriptsOnlyBuild:
     assemblyName: UnityEngine.TestRunner.dll
     namespaceName: UnityEngine.TestTools
     className: BeforeAfterTestCommandState
-  - hash:
-      serializedVersion: 2
-      Hash: be7d4470fd51692b921f78246f76070e
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: Unity.VisualScripting.Generated.PropertyProviders
-    className: PropertyProvider_UnityEngine_UI_Dropdown_DropdownEvent
   - hash:
       serializedVersion: 2
       Hash: 21fc0ab40df87e5caa5928222082035e
@@ -1284,12 +1126,6 @@ ScriptsOnlyBuild:
     assemblyName: Unity.TextMeshPro.dll
     namespaceName: TMPro
     className: TextContainer
-  - hash:
-      serializedVersion: 2
-      Hash: b6d628f4a0e7b128dd8b73939d7ed0c0
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: Unity.VisualScripting.Generated.PropertyProviders
-    className: PropertyProvider_TMPro_HorizontalAlignmentOptions
   - hash:
       serializedVersion: 2
       Hash: 8cb9c869ab50566c3424fcaae4d4269b
@@ -1358,12 +1194,6 @@ ScriptsOnlyBuild:
     className: Physics2DRaycaster
   - hash:
       serializedVersion: 2
-      Hash: 3d9a0b1adbe8519c68d8c93df9025c47
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: Unity.VisualScripting.Generated.PropertyProviders
-    className: PropertyProvider_UnityEngine_Events_UnityEvent
-  - hash:
-      serializedVersion: 2
       Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
     assemblyName: UnityEngine.TestRunner.dll
     namespaceName: UnityEngine.TestTools.TestRunner.Callbacks
@@ -1386,12 +1216,6 @@ ScriptsOnlyBuild:
     assemblyName: Unity.VisualScripting.Core.dll
     namespaceName: Unity.VisualScripting
     className: UnityOnPointerDownMessageListener
-  - hash:
-      serializedVersion: 2
-      Hash: 80b42be543042b278888290db55e0bd1
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: Unity.VisualScripting.Generated.PropertyProviders
-    className: PropertyProvider_UnityEngine_UI_Scrollbar_ScrollEvent
   - hash:
       serializedVersion: 2
       Hash: 7c792393fb82488bd20139dcc5ba26d8
@@ -1442,12 +1266,6 @@ ScriptsOnlyBuild:
     className: Dropdown
   - hash:
       serializedVersion: 2
-      Hash: 44bd2b5608de97146243165925f4b14d
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: Unity.VisualScripting.Generated.PropertyProviders
-    className: PropertyProvider_TMPro_TMP_InputField_OnChangeEvent
-  - hash:
-      serializedVersion: 2
       Hash: 0edeba255bdbade25edc357f1412ba38
     assemblyName: Unity.2D.SpriteShape.Runtime.dll
     namespaceName: UnityEngine.U2D
@@ -1470,18 +1288,6 @@ ScriptsOnlyBuild:
     assemblyName: Unity.VisualScripting.Core.dll
     namespaceName: Unity.VisualScripting
     className: UnityOnMoveMessageListener
-  - hash:
-      serializedVersion: 2
-      Hash: 80ac842258f8e4c860e1ff91a5a0d555
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: Unity.VisualScripting.Generated.PropertyProviders
-    className: PropertyProvider_TMPro_TMP_SpriteCharacter
-  - hash:
-      serializedVersion: 2
-      Hash: e9d7607ec8b5a299450f8bf4372b14e5
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: Unity.VisualScripting.Generated.PropertyProviders
-    className: PropertyProvider_UnityEngine_UI_Button_ButtonClickedEvent
   - hash:
       serializedVersion: 2
       Hash: 3ee38dae950a2169533c65ccdabe70cc
@@ -1598,46 +1404,16 @@ ScriptsOnlyBuild:
     className: SpriteLibrarySourceAsset
   - hash:
       serializedVersion: 2
-      Hash: 0411fc298a162f4786dfdac7d552e7d5
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: Unity.VisualScripting.Generated.PropertyProviders
-    className: PropertyProvider_Cinemachine_CinemachineTriggerAction_ActionSettings_TriggerEvent
-  - hash:
-      serializedVersion: 2
-      Hash: f31c465d1dc1a2d3fb07b1a9531f7c9e
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: Unity.VisualScripting.Generated.PropertyProviders
-    className: PropertyProvider_UnityEngine_UI_Dropdown_OptionDataList
-  - hash:
-      serializedVersion: 2
       Hash: 66a76d307baa3e8eb65d877c961f1b43
     assemblyName: Cinemachine.dll
     namespaceName: 
     className: CinemachineRecomposer
   - hash:
       serializedVersion: 2
-      Hash: 15d4b211fa5ba7db7a902ff14d6fc408
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: Unity.VisualScripting.Generated.PropertyProviders
-    className: PropertyProvider_UnityEngine_UI_InputField_SubmitEvent
-  - hash:
-      serializedVersion: 2
       Hash: b5c3dbcb94925c8b595ad16a62b44788
     assemblyName: Cinemachine.dll
     namespaceName: Cinemachine
     className: CinemachineBasicMultiChannelPerlin
-  - hash:
-      serializedVersion: 2
-      Hash: e0416ec9601cef85c9560f249aeb2a37
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: Unity.VisualScripting.Generated.PropertyProviders
-    className: PropertyProvider_TMPro_TMP_Style
-  - hash:
-      serializedVersion: 2
-      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: Unity.VisualScripting.Generated.PropertyProviders
-    className: PropertyProvider_UnityEngine_Events_UnityEventBase
   - hash:
       serializedVersion: 2
       Hash: 8220b46879dc5e37db1b940c938f5744
@@ -1683,4 +1459,4 @@ ScriptsOnlyBuild:
   platform: 19
   scenePathNames:
   - Assets/Scenes/Main.unity
-  playerPath: C:/Users/seers/OneDrive/Desktop/jumptest/FoxProject.exe
+  playerPath: C:/Users/seers/OneDrive/Desktop/Test/FoxProject.exe

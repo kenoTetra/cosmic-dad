@@ -55,6 +55,13 @@ public class PlayerBrain : MonoBehaviour
     Rigidbody2D rb;
     LayerMask groundLayerMask;
 
+    // DEBUG DEV
+    private bool DevFlip = false;
+
+    // Particles
+    public ParticleSystem SlideLeftParticles;
+    public ParticleSystem SlideRightParticles;
+
     void Start()
     {
         // Set the rigidbody on the player as "rb"
@@ -63,6 +70,11 @@ public class PlayerBrain : MonoBehaviour
         // Gets the ground's layer and sets a var to it
         groundLayerMask = (LayerMask.GetMask("Ground"));
 
+        // Particle Systems
+        SlideLeftParticles.GetComponent<ParticleSystem>();
+        SlideRightParticles.GetComponent<ParticleSystem>();
+
+        // Gets the sprite to flip
         playerSprite = GetComponentInChildren<SpriteRenderer>();
     }
 
@@ -81,6 +93,22 @@ public class PlayerBrain : MonoBehaviour
         flipSprite(moveX);
         playerJump();
         playerWall();
+
+        // DEBUG - Remove buffer + coyote time.
+        if(Input.GetKeyDown(KeyCode.Y)) 
+        {
+            jumpBufferMax = 0f;
+            coyoteTimeMax = 0f;
+            DevFlip = true;
+        }
+
+        // DEBUG - Re-enable buffer + coyote time.
+        if(Input.GetKeyDown(KeyCode.U)) 
+        {
+            coyoteTimeMax = 0.3f;
+            jumpBufferMax = 0.275f;
+            DevFlip = false;
+        }
     }
 
     private void playerMove(Vector2 dir)
@@ -105,20 +133,35 @@ public class PlayerBrain : MonoBehaviour
         jumpGravityModulator();
         coyoteTime();
         jumpBuffer();
-
-        // If you have coyote time and you jump (using the jump buffer)
-        if(coyoteTimeLeft > 0f && jumpBufferLeft > 0f)
+        
+        if(!DevFlip)
         {
-            // Set velocity to a new vector
-            rb.velocity = new Vector2(rb.velocity.x, 0);
+            // If you have coyote time and you jump (using the jump buffer)
+            if(coyoteTimeLeft > 0f && jumpBufferLeft > 0f)
+            {
+                // Set velocity to a new vector
+                rb.velocity = new Vector2(rb.velocity.x, 0);
 
-            // Add force upward based on the jump force
-            rb.velocity += Vector2.up * jumpForce;
+                // Add force upward based on the jump force
+                rb.velocity += Vector2.up * jumpForce;
 
-            // Remove coyote time and the jump buffer so you can't double jump
-            coyoteTimeLeft = 0f;
-            jumpBufferLeft = 0f;
+                // Remove coyote time and the jump buffer so you can't double jump
+                coyoteTimeLeft = 0f;
+                jumpBufferLeft = 0f;
+            }
         }
+        else
+        {
+            if(Input.GetKeyDown(KeyCode.Space) && grounded)
+            {
+                // Set velocity to a new vector
+                rb.velocity = new Vector2(rb.velocity.x, 0);
+
+                // Add force upward based on the jump force
+                rb.velocity += Vector2.up * jumpForce;
+            }
+        }
+        
     }
 
     private void playerWall()
@@ -149,6 +192,7 @@ public class PlayerBrain : MonoBehaviour
                     rb.velocity += Vector2.up * jumpForce;
                 }
 
+                // Closeup var changes
                 wallJumped = true;
                 lastSideTouching = sideTouching;
             }
@@ -158,8 +202,28 @@ public class PlayerBrain : MonoBehaviour
             {
                 // Make the player fall slower equal to the slide speed.
                 rb.velocity = new Vector2(rb.velocity.x, -slideSpeed);
-            }
 
+                // If touching the left side, make the particles appear on that side.
+                if(sideTouching == "left")
+                {
+                    SlideLeftParticles.Play();
+                    SlideRightParticles.Pause();
+                }
+
+                // Otherwise they appear on the right
+                else
+                {
+                    SlideRightParticles.Play();
+                    SlideLeftParticles.Pause();
+                }
+            }
+        }
+
+        // If nothing is happening here, disable particle systems as a just in case scenario.
+        else
+        {
+            SlideLeftParticles.Pause();
+            SlideRightParticles.Pause();
         }
     }
 
