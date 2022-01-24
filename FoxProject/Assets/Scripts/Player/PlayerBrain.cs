@@ -32,10 +32,6 @@ public class PlayerBrain : MonoBehaviour
     public bool wallJumped = false;
     [Space(5)]
 
-    private float grabTimeLeft = 0.2f;
-    public float grabTimeMax = 0.2f;
-    [Space(5)]
-
     [Range(5,20)]
     public float jumpForce = 10;
     public float jumpLerp = 5;
@@ -54,9 +50,6 @@ public class PlayerBrain : MonoBehaviour
     SpriteRenderer playerSprite;
     Rigidbody2D rb;
     LayerMask groundLayerMask;
-
-    // DEBUG DEV
-    private bool DevFlip = false;
 
     // Particles
     public ParticleSystem SlideLeftParticles;
@@ -91,24 +84,8 @@ public class PlayerBrain : MonoBehaviour
         // Call our movement functions
         playerMove(moveVector);
         flipSprite(moveX);
-        playerJump();
-        playerWall();
-
-        // DEBUG - Remove buffer + coyote time.
-        if(Input.GetKeyDown(KeyCode.Y)) 
-        {
-            jumpBufferMax = 0f;
-            coyoteTimeMax = 0f;
-            DevFlip = true;
-        }
-
-        // DEBUG - Re-enable buffer + coyote time.
-        if(Input.GetKeyDown(KeyCode.U)) 
-        {
-            coyoteTimeMax = 0.3f;
-            jumpBufferMax = 0.275f;
-            DevFlip = false;
-        }
+        playerJump(moveVector);
+        playerWall(moveVector);
     }
 
     private void playerMove(Vector2 dir)
@@ -127,48 +104,33 @@ public class PlayerBrain : MonoBehaviour
         
     }
 
-    private void playerJump()
+    private void playerJump(Vector2 dir)
     {
         checkGrounded();
         jumpGravityModulator();
         coyoteTime();
         jumpBuffer();
         
-        if(!DevFlip)
+        // If you have coyote time and you jump (using the jump buffer)
+        if(coyoteTimeLeft > 0f && jumpBufferLeft > 0f && grounded)
         {
-            // If you have coyote time and you jump (using the jump buffer)
-            if(coyoteTimeLeft > 0f && jumpBufferLeft > 0f)
-            {
-                // Set velocity to a new vector
-                rb.velocity = new Vector2(rb.velocity.x, 0);
+            // Set velocity to a new vector
+            rb.velocity = (new Vector2(dir.x * speed, rb.velocity.y));
 
-                // Add force upward based on the jump force
-                rb.velocity += Vector2.up * jumpForce;
+            // Add force upward based on the jump force
+            rb.velocity += Vector2.up * jumpForce;
 
-                // Remove coyote time and the jump buffer so you can't double jump
-                coyoteTimeLeft = 0f;
-                jumpBufferLeft = 0f;
+            // Remove coyote time and the jump buffer so you can't double jump
+            coyoteTimeLeft = 0f;
+            jumpBufferLeft = 0f;
             }
-        }
-        else
-        {
-            if(Input.GetKeyDown(KeyCode.Space) && grounded)
-            {
-                // Set velocity to a new vector
-                rb.velocity = new Vector2(rb.velocity.x, 0);
-
-                // Add force upward based on the jump force
-                rb.velocity += Vector2.up * jumpForce;
-            }
-        }
         
     }
 
-    private void playerWall()
+    private void playerWall(Vector2 dir)
     {
         checkWall();
         checkIfResetWall();
-        grabTime();
 
         // If the player is touching the wall
         if(touchingWall && !grounded)
@@ -188,7 +150,7 @@ public class PlayerBrain : MonoBehaviour
                 else
                 {
                     // Shoot them off to the left
-                    rb.velocity = new Vector2(speed * jumpOffSpeed, 0);
+                    rb.velocity = new Vector2(speed * -jumpOffSpeed, 0);
                     rb.velocity += Vector2.up * jumpForce;
                 }
 
@@ -197,8 +159,8 @@ public class PlayerBrain : MonoBehaviour
                 lastSideTouching = sideTouching;
             }
 
-            // Otherwise
-            else if(!grounded && Input.GetKey("left shift") && grabTimeLeft < 0)
+            // Otherwise, if a player hits left shift to slide
+            else if(!grounded && Input.GetKey("left shift"))
             {
                 // Make the player fall slower equal to the slide speed.
                 rb.velocity = new Vector2(rb.velocity.x, -slideSpeed);
@@ -275,21 +237,6 @@ public class PlayerBrain : MonoBehaviour
         else
         {
             coyoteTimeLeft -= Time.deltaTime;
-        }
-    }
-
-    private void grabTime()
-    {
-        // If the player is grounded, reset Coyote Time.
-        if(wallJumped) 
-        {
-            grabTimeLeft = grabTimeMax;
-        }
-
-        // Otherwise, start decreasing Coyote Time.
-        else
-        {
-            grabTimeLeft -= Time.deltaTime;
         }
     }
 
