@@ -24,12 +24,14 @@ public class PlayerBrain : MonoBehaviour
     // Jump
     private float jumpBufferLeft = 0.275f;
     public float jumpBufferMax = 0.275f;
+    public bool canDoubleJump = false;
     [Space(5)]
 
     [Header("Wall Jumping")]
 
     public float jumpOffSpeed = 1.5f;
     public bool wallJumped = false;
+    private bool wallJumping = false;
     [Space(5)]
 
     [Range(5,20)]
@@ -45,15 +47,32 @@ public class PlayerBrain : MonoBehaviour
     [Range(1f,5f)]
     private string sideTouching = "none";
     private string lastSideTouching = "none";
+    [Range(20f,25f)]
+    public float clampNumber = 23f;
+    [Space(10)]
 
     // Other
     SpriteRenderer playerSprite;
     Rigidbody2D rb;
     LayerMask groundLayerMask;
+    LayerMask shieldLayerMask;
 
     // Particles
     public ParticleSystem SlideLeftParticles;
     public ParticleSystem SlideRightParticles;
+    [Space(10)]
+
+    // Shields
+    [Header("Shields")]
+    public GameObject shieldOne;
+    public GameObject shieldTwo;
+    public GameObject shieldThree;
+    public GameObject shieldFour;
+
+    public string shieldKey = "e";
+    [Range(3f,8f)]
+    public float shieldThrowDistance = 4.0f;
+    private int shieldsOut = 0;
 
     void Start()
     {
@@ -61,7 +80,8 @@ public class PlayerBrain : MonoBehaviour
         rb = GetComponent<Rigidbody2D> ();
 
         // Gets the ground's layer and sets a var to it
-        groundLayerMask = (LayerMask.GetMask("Ground"));
+        groundLayerMask =~ (LayerMask.GetMask("Player"));
+        shieldLayerMask = (LayerMask.GetMask("Shield"));
 
         // Particle Systems
         SlideLeftParticles.GetComponent<ParticleSystem>();
@@ -86,6 +106,21 @@ public class PlayerBrain : MonoBehaviour
         flipSprite(moveX);
         playerJump(moveVector);
         playerWall(moveVector);
+        throwShield(shieldKey);
+
+        // Stop the floor despawning
+        clampVelocity(clampNumber);
+    }
+
+    // Checks for triggers
+    void OnTriggerEnter2D(Collider2D col)
+    {
+        if (col.gameObject.CompareTag("Wing")) 
+        {
+            print("Wing collected! " + col.gameObject.name);
+            col.gameObject.SetActive(false);
+            canDoubleJump = true;
+        }
     }
 
     private void playerMove(Vector2 dir)
@@ -110,6 +145,7 @@ public class PlayerBrain : MonoBehaviour
         jumpGravityModulator();
         coyoteTime();
         jumpBuffer();
+        checkDoubleJump();
         
         // If you have coyote time and you jump (using the jump buffer)
         if(coyoteTimeLeft > 0f && jumpBufferLeft > 0f && grounded)
@@ -123,7 +159,18 @@ public class PlayerBrain : MonoBehaviour
             // Remove coyote time and the jump buffer so you can't double jump
             coyoteTimeLeft = 0f;
             jumpBufferLeft = 0f;
-            }
+        }
+
+        // If you can double jump but can't jump normally and you're not touching something to walljump
+        else if(canDoubleJump && Input.GetButtonDown("Jump") && sideTouching == "none")
+        {
+            // Double jump time baby
+            rb.velocity = (new Vector2(dir.x * speed, rb.velocity.y));
+            rb.velocity += Vector2.up * jumpForce;
+
+            // Remove the double jump flag so no triple jumps
+            canDoubleJump = false;
+        }
         
     }
 
@@ -144,6 +191,8 @@ public class PlayerBrain : MonoBehaviour
                     // Shoot them off to the right
                     rb.velocity = new Vector2(speed * jumpOffSpeed, 0);
                     rb.velocity += Vector2.up * jumpForce;
+                    // Sets a split-second walljumping var for doublejump checks
+                    wallJumping = true;
                 }
 
                 // Otherwise
@@ -152,11 +201,14 @@ public class PlayerBrain : MonoBehaviour
                     // Shoot them off to the left
                     rb.velocity = new Vector2(speed * -jumpOffSpeed, 0);
                     rb.velocity += Vector2.up * jumpForce;
+                    // Sets a split-second walljumping var for doublejump checks
+                    wallJumping = true;
                 }
 
                 // Closeup var changes
                 wallJumped = true;
                 lastSideTouching = sideTouching;
+                wallJumping = false;
             }
 
             // Otherwise, if a player hits left shift to slide
@@ -293,6 +345,8 @@ public class PlayerBrain : MonoBehaviour
 
     private void checkIfResetWall()
     {
+        // If the player touches another wall that wasn't the same as the wall they jumped off of, let them walljump again
+        // Easily modifiable to just be if they touch a wall by removing "lastSideTouching != sideTouching"
         if (lastSideTouching != sideTouching && sideTouching != "none")
         {
             wallJumped = false;
@@ -325,4 +379,119 @@ public class PlayerBrain : MonoBehaviour
         }
     }
 
+    private void throwShield(string shieldKey)
+    {
+        if(Input.GetKeyDown(shieldKey))
+        {
+            // Get Player Y to set to shield.
+            float shieldX = 0;
+            float shieldY = this.transform.position.y;
+
+            RaycastHit2D leftShieldRay = Physics2D.Raycast(transform.position, Vector2.left, shieldThrowDistance, groundLayerMask);
+            RaycastHit2D rightShieldRay = Physics2D.Raycast(transform.position, Vector2.right, shieldThrowDistance, groundLayerMask);
+
+            if(Physics2D.Raycast(transform.position, Vector2.left, shieldThrowDistance, shieldLayerMask) && playerSprite.flipX || Physics2D.Raycast(transform.position, Vector2.right, shieldThrowDistance, shieldLayerMask) && !playerSprite.flipX)
+            {
+                print("owned");
+            }
+
+            // Get the player sprite direction, shoot the ray in the direction that they're facing
+            else if(playerSprite.flipX && leftShieldRay)
+            {
+                // Sets the Shield's X to the distance from the player +/- 1 so the shield doesn't clip in the wall.
+                shieldX = this.transform.position.x - leftShieldRay.distance + .5f;
+                print("Found an object - distance: " + leftShieldRay.distance);
+                spawnShield(shieldX, shieldY);
+                
+            }
+
+            // Get the player sprite direction, shoot the ray in the direction that they're facing
+            else if(!playerSprite.flipX && rightShieldRay)
+            {
+                // Sets the Shield's X to the distance from the player +/- 1 so the shield doesn't clip in the wall.
+                shieldX = this.transform.position.x + rightShieldRay.distance - .5f;
+                print("Found an object - distance: " + rightShieldRay.distance);
+                spawnShield(shieldX, shieldY);
+            }
+
+            // Get the player sprite direction, puts the shield out as far as the ray is cast
+            else
+            {
+                // If nothing is found, set it out the ray distance.
+                if(playerSprite.flipX)
+                {
+                    shieldX = this.transform.position.x - shieldThrowDistance + .5f;
+                }
+                else
+                {
+                    shieldX = this.transform.position.x + shieldThrowDistance - .5f;
+                }
+                print("No object found!");
+                spawnShield(shieldX, shieldY);
+            }
+        }
+    }
+
+    private void spawnShield(float shieldX, float shieldY)
+    {
+        /*
+        This function spawns shields based on how many are active.
+        EX:
+        If none are activate it activates a new one.
+        If one is active, it activates a new one.
+        If two are active it moves the oldest one.
+        Then, it activates a new one.
+        */
+
+        switch(shieldsOut)
+        {
+            case 0:
+                shieldOne.SetActive(true);
+                shieldOne.transform.position = new Vector3(shieldX, shieldY, 0);
+                shieldsOut += 1;
+                break;
+            
+            case 1:
+                shieldTwo.SetActive(true);
+                shieldTwo.transform.position = new Vector3(shieldX, shieldY, 0);
+                shieldsOut += 1;
+                break;
+
+            case 2:
+                shieldThree.SetActive(true);
+                shieldThree.transform.position = new Vector3(shieldX, shieldY, 0);
+                shieldsOut += 1;
+                break;
+
+            case 3:
+                shieldFour.SetActive(true);
+                shieldFour.transform.position = new Vector3(shieldX, shieldY, 0);
+                shieldsOut = 0;
+                break;
+        }
+
+        print("Shield thrown: " + shieldsOut);
+    }
+
+    private void checkDoubleJump()
+    {
+        // Removes doublejump when you touch the ground or a wall
+        if(grounded || wallJumping)
+        {
+            canDoubleJump = false;
+        }
+    }
+
+    private void clampVelocity(float clampNumber)
+    {
+        if(this.rb.velocity.y > clampNumber)
+        {
+            rb.velocity = new Vector2(rb.velocity.x, clampNumber);
+        }
+
+        if(this.rb.velocity.y < -clampNumber)
+        {
+            rb.velocity = new Vector2(rb.velocity.x, -clampNumber);
+        }
+    }
 }
