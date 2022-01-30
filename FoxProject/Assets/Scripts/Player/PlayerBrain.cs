@@ -294,11 +294,12 @@ public class PlayerBrain : MonoBehaviour
 
     private void checkGrounded()
     {
-        // Cast a ray downwards out .6u
-        RaycastHit2D downwardRay = Physics2D.Raycast(transform.position, -Vector2.up, 0.6f, groundLayerMask);
-        
-        // If it hits something that is the ground
-        if (downwardRay.collider != null)
+        // Cast rays downwards at either side of player out 0.1u
+        RaycastHit2D downwardRayLeft = Physics2D.Raycast(transform.position + new Vector3(-0.35f, -0.9f, 0), -Vector2.up, 0.1f, groundLayerMask);
+        RaycastHit2D downwardRayRight = Physics2D.Raycast(transform.position + new Vector3(0.35f, -0.9f, 0), -Vector2.up, 0.1f, groundLayerMask);
+
+        // If they hit something that is the ground
+        if (downwardRayLeft.collider != null || downwardRayRight.collider != null)
         {
             // Set grounded to true
             grounded = true;
