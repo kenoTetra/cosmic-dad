@@ -208,6 +208,8 @@ public class PlayerBrain : MonoBehaviour
                     // Shoot them off to the right
                     rb.velocity = new Vector2(speed * jumpOffSpeed, 0);
                     rb.velocity += Vector2.up * jumpForce;
+                    // Play jump sound
+                    audioSource.PlayOneShot(jumpSound, 0.6F);
                     // Sets a split-second walljumping var for doublejump checks
                     wallJumping = true;
                 }
@@ -218,6 +220,8 @@ public class PlayerBrain : MonoBehaviour
                     // Shoot them off to the left
                     rb.velocity = new Vector2(speed * -jumpOffSpeed, 0);
                     rb.velocity += Vector2.up * jumpForce;
+                    // Play jump sound
+                    audioSource.PlayOneShot(jumpSound, 0.6F);
                     // Sets a split-second walljumping var for doublejump checks
                     wallJumping = true;
                 }
