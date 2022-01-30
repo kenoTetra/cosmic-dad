@@ -20074,6 +20074,9 @@ MonoBehaviour:
   shieldFour: {fileID: 1789956807}
   shieldKey: e
   shieldThrowDistance: 4
+  shieldthrow: {fileID: 0}
+  jumpSound: {fileID: 0}
+  groundLand: {fileID: 0}
 --- !u!50 &904322664
 Rigidbody2D:
   serializedVersion: 4
@@ -20148,7 +20151,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: c0bd3bcd26dca4344bfdb7d7addd6cb3, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1

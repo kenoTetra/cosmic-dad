@@ -56,6 +56,7 @@ public class PlayerBrain : MonoBehaviour
     Rigidbody2D rb;
     LayerMask groundLayerMask;
     LayerMask shieldLayerMask;
+    AudioSource audioSource;
 
     // Particles
     public ParticleSystem SlideLeftParticles;
@@ -74,6 +75,11 @@ public class PlayerBrain : MonoBehaviour
     public float shieldThrowDistance = 4.0f;
     private int shieldsOut = 0;
 
+    // SFX
+    public AudioClip shieldthrow;
+    public AudioClip jumpSound;
+    public AudioClip groundLand;
+
     void Start()
     {
         // Set the rigidbody on the player as "rb"
@@ -89,6 +95,14 @@ public class PlayerBrain : MonoBehaviour
 
         // Gets the sprite to flip
         playerSprite = GetComponentInChildren<SpriteRenderer>();
+
+        // Set Audiosource
+        audioSource = GetComponent<AudioSource>();
+
+        //Load Sound Effects
+        shieldthrow = (AudioClip)Resources.Load("SFX/shieldthrow");
+        jumpSound = (AudioClip)Resources.Load("SFX/jump");
+        groundLand = (AudioClip)Resources.Load("SFX/groundland");
     }
 
     void Update()
@@ -155,6 +169,9 @@ public class PlayerBrain : MonoBehaviour
 
             // Add force upward based on the jump force
             rb.velocity += Vector2.up * jumpForce;
+
+            //Play jump sound
+            audioSource.PlayOneShot(jumpSound, 0.7F);
 
             // Remove coyote time and the jump buffer so you can't double jump
             coyoteTimeLeft = 0f;
@@ -301,6 +318,11 @@ public class PlayerBrain : MonoBehaviour
         // If they hit something that is the ground
         if (downwardRayLeft.collider != null || downwardRayRight.collider != null)
         {
+            //Play landing sound once
+            if (grounded == false)
+            {
+                audioSource.PlayOneShot(groundLand, 0.5F);
+            }
             // Set grounded to true
             grounded = true;
             // Also, reset the walljump.
@@ -403,7 +425,8 @@ public class PlayerBrain : MonoBehaviour
                 shieldX = this.transform.position.x - leftShieldRay.distance + .5f;
                 print("Found an object - distance: " + leftShieldRay.distance);
                 spawnShield(shieldX, shieldY);
-                
+                audioSource.PlayOneShot(shieldthrow, 0.6F);
+
             }
 
             // Get the player sprite direction, shoot the ray in the direction that they're facing
@@ -413,6 +436,7 @@ public class PlayerBrain : MonoBehaviour
                 shieldX = this.transform.position.x + rightShieldRay.distance - .5f;
                 print("Found an object - distance: " + rightShieldRay.distance);
                 spawnShield(shieldX, shieldY);
+                audioSource.PlayOneShot(shieldthrow, 0.6F);
             }
 
             // Get the player sprite direction, puts the shield out as far as the ray is cast
@@ -429,6 +453,7 @@ public class PlayerBrain : MonoBehaviour
                 }
                 print("No object found!");
                 spawnShield(shieldX, shieldY);
+                audioSource.PlayOneShot(shieldthrow, 0.6F);
             }
         }
     }
