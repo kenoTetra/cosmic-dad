@@ -57,6 +57,7 @@ public class PlayerBrain : MonoBehaviour
     LayerMask groundLayerMask;
     LayerMask shieldLayerMask;
     AudioSource audioSource;
+    Animator animator;
 
     // Particles
     public ParticleSystem SlideLeftParticles;
@@ -413,6 +414,7 @@ public class PlayerBrain : MonoBehaviour
             // Get Player Y to set to shield.
             float shieldX = 0;
             float shieldY = this.transform.position.y;
+            int shieldD = 1;
 
             RaycastHit2D leftShieldRay = Physics2D.Raycast(transform.position, Vector2.left, shieldThrowDistance, groundLayerMask);
             RaycastHit2D rightShieldRay = Physics2D.Raycast(transform.position, Vector2.right, shieldThrowDistance, groundLayerMask);
@@ -428,7 +430,8 @@ public class PlayerBrain : MonoBehaviour
                 // Sets the Shield's X to the distance from the player +/- 1 so the shield doesn't clip in the wall.
                 shieldX = this.transform.position.x - leftShieldRay.distance + .5f;
                 print("Found an object - distance: " + leftShieldRay.distance);
-                spawnShield(shieldX, shieldY);
+                shieldD = -1;
+                spawnShield(shieldX, shieldY, shieldD);
                 audioSource.PlayOneShot(shieldthrow, 0.6F);
 
             }
@@ -439,7 +442,8 @@ public class PlayerBrain : MonoBehaviour
                 // Sets the Shield's X to the distance from the player +/- 1 so the shield doesn't clip in the wall.
                 shieldX = this.transform.position.x + rightShieldRay.distance - .5f;
                 print("Found an object - distance: " + rightShieldRay.distance);
-                spawnShield(shieldX, shieldY);
+                shieldD = 1;
+                spawnShield(shieldX, shieldY, shieldD);
                 audioSource.PlayOneShot(shieldthrow, 0.6F);
             }
 
@@ -450,19 +454,21 @@ public class PlayerBrain : MonoBehaviour
                 if(playerSprite.flipX)
                 {
                     shieldX = this.transform.position.x - shieldThrowDistance + .5f;
+                    shieldD = -1;
                 }
                 else
                 {
                     shieldX = this.transform.position.x + shieldThrowDistance - .5f;
+                    shieldD = 1;
                 }
                 print("No object found!");
-                spawnShield(shieldX, shieldY);
+                spawnShield(shieldX, shieldY, shieldD);
                 audioSource.PlayOneShot(shieldthrow, 0.6F);
             }
         }
     }
 
-    private void spawnShield(float shieldX, float shieldY)
+    private void spawnShield(float shieldX, float shieldY, int shieldD)
     {
         /*
         This function spawns shields based on how many are active.
@@ -478,24 +484,36 @@ public class PlayerBrain : MonoBehaviour
             case 0:
                 shieldOne.SetActive(true);
                 shieldOne.transform.position = new Vector3(shieldX, shieldY, 0);
+                shieldOne.transform.localScale = new Vector3(Mathf.Abs(shieldOne.transform.localScale.x) * shieldD, shieldOne.transform.localScale.y, shieldOne.transform.localScale.z);
+                animator = shieldOne.GetComponentInChildren<Animator>();
+                animator.SetTrigger("Reset");
                 shieldsOut += 1;
                 break;
             
             case 1:
                 shieldTwo.SetActive(true);
                 shieldTwo.transform.position = new Vector3(shieldX, shieldY, 0);
+                shieldTwo.transform.localScale = new Vector3(Mathf.Abs(shieldTwo.transform.localScale.x) * shieldD, shieldTwo.transform.localScale.y, shieldTwo.transform.localScale.z);
+                animator = shieldTwo.GetComponentInChildren<Animator>();
+                animator.SetTrigger("Reset");
                 shieldsOut += 1;
                 break;
 
             case 2:
                 shieldThree.SetActive(true);
                 shieldThree.transform.position = new Vector3(shieldX, shieldY, 0);
+                shieldThree.transform.localScale = new Vector3(Mathf.Abs(shieldThree.transform.localScale.x) * shieldD, shieldThree.transform.localScale.y, shieldThree.transform.localScale.z);
+                animator = shieldThree.GetComponentInChildren<Animator>();
+                animator.SetTrigger("Reset");
                 shieldsOut += 1;
                 break;
 
             case 3:
                 shieldFour.SetActive(true);
                 shieldFour.transform.position = new Vector3(shieldX, shieldY, 0);
+                shieldFour.transform.localScale = new Vector3(Mathf.Abs(shieldFour.transform.localScale.x) * shieldD, shieldFour.transform.localScale.y, shieldFour.transform.localScale.z);
+                animator = shieldFour.GetComponentInChildren<Animator>();
+                animator.SetTrigger("Reset");
                 shieldsOut = 0;
                 break;
         }
