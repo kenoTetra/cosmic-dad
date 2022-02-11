@@ -61,7 +61,6 @@ public class PlayerBrain : MonoBehaviour
     [Header("Shields")]
     public List<GameObject> shieldsList = new List<GameObject>();
 
-    public string shieldKey = "e";
     public string resetKey = "r";
 
     [Range(3f,8f)]
@@ -74,6 +73,7 @@ public class PlayerBrain : MonoBehaviour
     private AudioClip groundLand;
 
     // Other
+    private bool switchCase = false;
     SpriteRenderer playerSprite;
     Rigidbody2D rb;
     LayerMask groundLayerMask;
@@ -136,7 +136,7 @@ public class PlayerBrain : MonoBehaviour
         flipSprite(moveX);
         playerJump(moveVector);
         playerWall(moveVector);
-        throwShield(shieldKey);
+        throwShield();
 
         // Stop the floor despawning
         clampVelocity(clampNumber);
@@ -383,14 +383,14 @@ public class PlayerBrain : MonoBehaviour
         else
         {
             touchingWall = false;
+            sideTouching = "none";
         }
     }
 
     private void checkIfResetWall()
     {
         // If the player touches another wall that wasn't the same as the wall they jumped off of, let them walljump again
-        // Easily modifiable to just be if they touch a wall by removing "lastSideTouching != sideTouching"
-        if (lastSideTouching != sideTouching && sideTouching != "none")
+        if (sideTouching != "none" && sideTouching != lastSideTouching)
         {
             wallJumped = false;
 
@@ -422,25 +422,30 @@ public class PlayerBrain : MonoBehaviour
         }
     }
 
-    private void throwShield(string shieldKey)
+    private void throwShield()
     {
-        if(Input.GetKeyDown(shieldKey) && shieldsOut != shieldsList.Count - 1)
+        if(Input.GetAxis("ShieldThrowKeys") != 0 && shieldsOut != shieldsList.Count - 1)
         {
             // Get Player Y to set to shield.
             float shieldX = 0;
             float shieldY = this.transform.position.y;
+
+            // Defaults to left if a null gets thrown
             string shieldD = "Left";
 
+            // Cast a ray out on both sides, because fuck.
             RaycastHit2D leftShieldRay = Physics2D.Raycast(transform.position, Vector2.left, shieldThrowDistance, groundLayerMask);
             RaycastHit2D rightShieldRay = Physics2D.Raycast(transform.position, Vector2.right, shieldThrowDistance, groundLayerMask);
 
-            if(Physics2D.Raycast(transform.position, Vector2.left, shieldThrowDistance, shieldLayerMask) && playerSprite.flipX || Physics2D.Raycast(transform.position, Vector2.right, shieldThrowDistance, shieldLayerMask) && !playerSprite.flipX)
+            if(Physics2D.Raycast(transform.position, Vector2.left, shieldThrowDistance, shieldLayerMask) && Input.GetAxis("ShieldThrowKeys") == -1 && !switchCase
+            || Physics2D.Raycast(transform.position, Vector2.right, shieldThrowDistance, shieldLayerMask) && Input.GetAxis("ShieldThrowKeys") == 1 && !switchCase)
             {
+                switchCase = true;
                 print("owned");
             }
 
             // Get the player sprite direction, shoot the ray in the direction that they're facing
-            else if(playerSprite.flipX && leftShieldRay)
+            else if(Input.GetAxis("ShieldThrowKeys") == -1 && leftShieldRay && !switchCase)
             {
                 // Sets the Shield's X to the distance from the player +/- 1 so the shield doesn't clip in the wall.
                 shieldX = this.transform.position.x - leftShieldRay.distance + .5f;
@@ -448,11 +453,12 @@ public class PlayerBrain : MonoBehaviour
                 shieldD = "Left";
                 spawnShield(shieldX, shieldY, shieldD);
                 audioSource.PlayOneShot(shieldthrow, 0.6F);
+                switchCase = true;
 
             }
 
             // Get the player sprite direction, shoot the ray in the direction that they're facing
-            else if(!playerSprite.flipX && rightShieldRay)
+            else if(Input.GetAxis("ShieldThrowKeys") == 1 && rightShieldRay && !switchCase)
             {
                 // Sets the Shield's X to the distance from the player +/- 1 so the shield doesn't clip in the wall.
                 shieldX = this.transform.position.x + rightShieldRay.distance - .5f;
@@ -460,26 +466,34 @@ public class PlayerBrain : MonoBehaviour
                 shieldD = "Right";
                 spawnShield(shieldX, shieldY, shieldD);
                 audioSource.PlayOneShot(shieldthrow, 0.6F);
+                switchCase = true;
             }
 
             // Get the player sprite direction, puts the shield out as far as the ray is cast
-            else
+            else if(!switchCase)
             {
                 // If nothing is found, set it out the ray distance.
-                if(playerSprite.flipX)
+                if(Input.GetAxis("ShieldThrowKeys") == -1)
                 {
                     shieldX = this.transform.position.x - shieldThrowDistance + .5f;
                     shieldD = "Left";
+                    switchCase = true;
                 }
-                else
+                else if(Input.GetAxis("ShieldThrowKeys") == 1)
                 {
                     shieldX = this.transform.position.x + shieldThrowDistance - .5f;
                     shieldD = "Right";
+                    switchCase = true;
                 }
                 print("No object found!");
                 spawnShield(shieldX, shieldY, shieldD);
                 audioSource.PlayOneShot(shieldthrow, 0.6F);
             }
+        }
+
+        if(Input.GetAxis("ShieldThrowKeys") == 0)
+        {
+            switchCase = false;
         }
 
         if(Input.GetKeyDown(resetKey))
@@ -496,12 +510,10 @@ public class PlayerBrain : MonoBehaviour
     private void spawnShield(float shieldX, float shieldY, string shieldD)
     {
         /*
-        This function spawns shields based on how many are active.
-        EX:
-        If none are activate it activates a new one.
-        If one is active, it activates a new one.
-        If two are active it moves the oldest one.
-        Then, it activates a new one.
+        This function spawns shields from a list set in Start
+        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    ALL SHIELDS MUST BE ACTIVE AT GAME START OR IT WONT BE ADDED TO THE LIST
+        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         */
 
         if (shieldsList[shieldsOut] != null  && shieldsOut != shieldsList.Count - 1)
