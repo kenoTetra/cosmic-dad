@@ -51,14 +51,6 @@ public class PlayerBrain : MonoBehaviour
     public float clampNumber = 23f;
     [Space(10)]
 
-    // Other
-    SpriteRenderer playerSprite;
-    Rigidbody2D rb;
-    LayerMask groundLayerMask;
-    LayerMask shieldLayerMask;
-    AudioSource audioSource;
-    Animator animator;
-
     // Particles
     private GameObject slideLeft;
     private GameObject slideRight;
@@ -80,6 +72,14 @@ public class PlayerBrain : MonoBehaviour
     private AudioClip shieldthrow;
     private AudioClip jumpSound;
     private AudioClip groundLand;
+
+    // Other
+    SpriteRenderer playerSprite;
+    Rigidbody2D rb;
+    LayerMask groundLayerMask;
+    LayerMask shieldLayerMask;
+    AudioSource audioSource;
+    Animator animator;
 
     void Start()
     {
@@ -424,7 +424,7 @@ public class PlayerBrain : MonoBehaviour
 
     private void throwShield(string shieldKey)
     {
-        if(Input.GetKeyDown(shieldKey))
+        if(Input.GetKeyDown(shieldKey) && shieldsOut != shieldsList.Count - 1)
         {
             // Get Player Y to set to shield.
             float shieldX = 0;

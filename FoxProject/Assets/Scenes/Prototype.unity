@@ -595,7 +595,7 @@ Transform:
   m_Children:
   - {fileID: 1606726280}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!251 &100581192
 PlatformEffector2D:
@@ -1328,7 +1328,7 @@ Transform:
   m_Children:
   - {fileID: 869356956}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!251 &381148141
 PlatformEffector2D:
@@ -41721,7 +41721,7 @@ Transform:
   - {fileID: 936881476}
   - {fileID: 1163209831}
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &904322667
 AudioSource:
@@ -53820,7 +53820,7 @@ Transform:
   m_Children:
   - {fileID: 1720989124}
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!251 &1789956811
 PlatformEffector2D:
@@ -54313,7 +54313,7 @@ Transform:
   m_Children:
   - {fileID: 1177230185}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!251 &1937345464
 PlatformEffector2D:
