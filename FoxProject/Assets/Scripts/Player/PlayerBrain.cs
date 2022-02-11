@@ -198,7 +198,7 @@ public class PlayerBrain : MonoBehaviour
         else if(canDoubleJump && Input.GetButtonDown("Jump") && sideTouching == "none")
         {
             // Double jump time baby
-            rb.velocity = (new Vector2(dir.x * speed, rb.velocity.y));
+            rb.velocity = (new Vector2(dir.x * speed, 0));
             rb.velocity += Vector2.up * jumpForce;
 
             // Remove the double jump flag so no triple jumps
