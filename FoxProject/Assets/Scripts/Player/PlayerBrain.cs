@@ -60,26 +60,26 @@ public class PlayerBrain : MonoBehaviour
     Animator animator;
 
     // Particles
-    public ParticleSystem SlideLeftParticles;
-    public ParticleSystem SlideRightParticles;
-    [Space(10)]
+    private GameObject slideLeft;
+    private GameObject slideRight;
+    private ParticleSystem slideLeftParticles;
+    private ParticleSystem slideRightParticles;
 
     // Shields
     [Header("Shields")]
-    public GameObject shieldOne;
-    public GameObject shieldTwo;
-    public GameObject shieldThree;
-    public GameObject shieldFour;
+    public List<GameObject> shieldsList = new List<GameObject>();
 
     public string shieldKey = "e";
+    public string resetKey = "r";
+
     [Range(3f,8f)]
     public float shieldThrowDistance = 4.0f;
     private int shieldsOut = 0;
 
     // SFX
-    public AudioClip shieldthrow;
-    public AudioClip jumpSound;
-    public AudioClip groundLand;
+    private AudioClip shieldthrow;
+    private AudioClip jumpSound;
+    private AudioClip groundLand;
 
     void Start()
     {
@@ -91,14 +91,29 @@ public class PlayerBrain : MonoBehaviour
         shieldLayerMask = (LayerMask.GetMask("Shield"));
 
         // Particle Systems
-        SlideLeftParticles.GetComponent<ParticleSystem>();
-        SlideRightParticles.GetComponent<ParticleSystem>();
+        slideLeft = GameObject.Find("Sliding Left");
+        slideRight = GameObject.Find("Sliding Right");
+        slideLeftParticles = slideLeft.GetComponent<ParticleSystem>();
+        slideRightParticles = slideRight.GetComponent<ParticleSystem>();
 
         // Gets the sprite to flip
         playerSprite = GetComponentInChildren<SpriteRenderer>();
 
         // Set Audiosource
         audioSource = GetComponent<AudioSource>();
+
+        // Set Shield List
+        foreach(GameObject shieldID in GameObject.FindGameObjectsWithTag("Shield")) 
+        {
+             shieldsList.Add(shieldID);
+        }
+
+        print("Shields found! # of shields: " + shieldsList.Count);
+
+        // DEBUG: Print each shield
+        // foreach (GameObject shieldID in shieldsList) {
+        //     print("shield located: " + shieldID);
+        // }
 
         //Load Sound Effects
         shieldthrow = (AudioClip)Resources.Load("SFX/shieldthrow");
@@ -242,15 +257,15 @@ public class PlayerBrain : MonoBehaviour
                 // If touching the left side, make the particles appear on that side.
                 if(sideTouching == "left")
                 {
-                    SlideLeftParticles.Play();
-                    SlideRightParticles.Pause();
+                    slideLeftParticles.Play();
+                    slideRightParticles.Pause();
                 }
 
                 // Otherwise they appear on the right
                 else
                 {
-                    SlideRightParticles.Play();
-                    SlideLeftParticles.Pause();
+                    slideRightParticles.Play();
+                    slideLeftParticles.Pause();
                 }
             }
         }
@@ -258,8 +273,8 @@ public class PlayerBrain : MonoBehaviour
         // If nothing is happening here, disable particle systems as a just in case scenario.
         else
         {
-            SlideLeftParticles.Pause();
-            SlideRightParticles.Pause();
+            slideLeftParticles.Pause();
+            slideRightParticles.Pause();
         }
     }
 
@@ -466,6 +481,16 @@ public class PlayerBrain : MonoBehaviour
                 audioSource.PlayOneShot(shieldthrow, 0.6F);
             }
         }
+
+        if(Input.GetKeyDown(resetKey))
+        {
+            foreach (GameObject shieldID in shieldsList)
+            {
+                shieldID.transform.position = new Vector2(0, -50.0f);
+            }
+
+            shieldsOut = 0;
+        }
     }
 
     private void spawnShield(float shieldX, float shieldY, string shieldD)
@@ -479,42 +504,21 @@ public class PlayerBrain : MonoBehaviour
         Then, it activates a new one.
         */
 
-        switch(shieldsOut)
+        if (shieldsList[shieldsOut] != null  && shieldsOut != shieldsList.Count - 1)
         {
-            case 0:
-                shieldOne.SetActive(true);
-                shieldOne.transform.position = new Vector3(shieldX, shieldY, 0);
-                animator = shieldOne.GetComponentInChildren<Animator>();
-                animator.SetTrigger(shieldD);
-                shieldsOut += 1;
-                break;
-            
-            case 1:
-                shieldTwo.SetActive(true);
-                shieldTwo.transform.position = new Vector3(shieldX, shieldY, 0);
-                animator = shieldTwo.GetComponentInChildren<Animator>();
-                animator.SetTrigger(shieldD);
-                shieldsOut += 1;
-                break;
+            shieldsList[shieldsOut].SetActive(true);
+            shieldsList[shieldsOut].transform.position = new Vector3(shieldX, shieldY, 0);
+            animator = shieldsList[shieldsOut].GetComponentInChildren<Animator>();
+            animator.SetTrigger(shieldD);
+            shieldsOut += 1;
 
-            case 2:
-                shieldThree.SetActive(true);
-                shieldThree.transform.position = new Vector3(shieldX, shieldY, 0);
-                animator = shieldThree.GetComponentInChildren<Animator>();
-                animator.SetTrigger(shieldD);
-                shieldsOut += 1;
-                break;
-
-            case 3:
-                shieldFour.SetActive(true);
-                shieldFour.transform.position = new Vector3(shieldX, shieldY, 0);
-                animator = shieldFour.GetComponentInChildren<Animator>();
-                animator.SetTrigger(shieldD);
-                shieldsOut = 0;
-                break;
+            print("Shield thrown: " + shieldsOut);
         }
-
-        print("Shield thrown: " + shieldsOut);
+        
+        else
+        {
+            print("Player is out of shields!");
+        }
     }
 
     private void checkDoubleJump()
