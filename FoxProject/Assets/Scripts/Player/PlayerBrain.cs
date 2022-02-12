@@ -14,6 +14,8 @@ public class PlayerBrain : MonoBehaviour
     [Header("Jumping")]
     public bool grounded = true;
     public bool touchingWall = false;
+    public float totalAirTime = 0f;
+    public float airTimeGripReq = 0.5f;
     [Space(5)]
 
     // Coyote Time
@@ -22,8 +24,8 @@ public class PlayerBrain : MonoBehaviour
     [Space(5)]
 
     // Jump
-    private float jumpBufferLeft = 0.275f;
-    public float jumpBufferMax = 0.275f;
+    private float jumpBufferLeft = 0.175f;
+    public float jumpBufferMax = 0.175f;
     public bool canDoubleJump = false;
     [Space(5)]
 
@@ -78,6 +80,7 @@ public class PlayerBrain : MonoBehaviour
     Rigidbody2D rb;
     LayerMask groundLayerMask;
     LayerMask shieldLayerMask;
+    LayerMask floorLayerMask;
     AudioSource audioSource;
     Animator animator;
 
@@ -87,7 +90,8 @@ public class PlayerBrain : MonoBehaviour
         rb = GetComponent<Rigidbody2D> ();
 
         // Gets the ground's layer and sets a var to it
-        groundLayerMask =~ (LayerMask.GetMask("Player"));
+        groundLayerMask = (LayerMask.GetMask("Ground"));
+        floorLayerMask =~ (LayerMask.GetMask("Player"));
         shieldLayerMask = (LayerMask.GetMask("Shield"));
 
         // Particle Systems
@@ -110,11 +114,6 @@ public class PlayerBrain : MonoBehaviour
 
         print("Shields found! # of shields: " + shieldsList.Count);
 
-        // DEBUG: Print each shield
-        // foreach (GameObject shieldID in shieldsList) {
-        //     print("shield located: " + shieldID);
-        // }
-
         //Load Sound Effects
         shieldthrow = (AudioClip)Resources.Load("SFX/shieldthrow");
         jumpSound = (AudioClip)Resources.Load("SFX/jump");
@@ -135,8 +134,10 @@ public class PlayerBrain : MonoBehaviour
         playerMove(moveVector);
         flipSprite(moveX);
         playerJump(moveVector);
+        checkAirTime();
         playerWall(moveVector);
         throwShield();
+        
 
         // Stop the floor despawning
         clampVelocity(clampNumber);
@@ -248,22 +249,23 @@ public class PlayerBrain : MonoBehaviour
                 wallJumping = false;
             }
 
-            // Otherwise, if a player hits left shift to slide
-            else if(!grounded && Input.GetKey("left shift"))
+            // Otherwise, if a player isn't grounded and they arent just in the air
+            else if(!grounded && sideTouching != "none")
             {
                 // Make the player fall slower equal to the slide speed.
-                rb.velocity = new Vector2(rb.velocity.x, -slideSpeed);
 
                 // If touching the left side, make the particles appear on that side.
-                if(sideTouching == "left")
+                if(sideTouching == "left" && rb.velocity.x < 0 && totalAirTime > airTimeGripReq)
                 {
+                    rb.velocity = new Vector2(rb.velocity.x, -slideSpeed);
                     slideLeftParticles.Play();
                     slideRightParticles.Pause();
                 }
 
                 // Otherwise they appear on the right
-                else
+                else if(sideTouching == "right" && rb.velocity.x > 0 && totalAirTime > airTimeGripReq)
                 {
+                    rb.velocity = new Vector2(rb.velocity.x, -slideSpeed);
                     slideRightParticles.Play();
                     slideLeftParticles.Pause();
                 }
@@ -314,6 +316,21 @@ public class PlayerBrain : MonoBehaviour
         }
     }
 
+    private void checkAirTime()
+    {
+        // If the player is on the ground/is touching a wall after wall jumping/walljumping, reset their air time
+        if(grounded || sideTouching == "none" && wallJumped)
+        {
+            totalAirTime = 0;
+        }
+
+        // Otherwise, start decreasing their jump buffer.
+        else 
+        {
+            totalAirTime += Time.deltaTime;
+        }
+    }
+
     private void coyoteTime()
     {
         // If the player is grounded, reset Coyote Time.
@@ -332,8 +349,8 @@ public class PlayerBrain : MonoBehaviour
     private void checkGrounded()
     {
         // Cast rays downwards at either side of player out 0.1u
-        RaycastHit2D downwardRayLeft = Physics2D.Raycast(transform.position + new Vector3(-0.35f, -0.9f, 0), -Vector2.up, 0.1f, groundLayerMask);
-        RaycastHit2D downwardRayRight = Physics2D.Raycast(transform.position + new Vector3(0.35f, -0.9f, 0), -Vector2.up, 0.1f, groundLayerMask);
+        RaycastHit2D downwardRayLeft = Physics2D.Raycast(transform.position + new Vector3(-0.35f, -0.9f, 0), -Vector2.up, 0.1f, floorLayerMask);
+        RaycastHit2D downwardRayRight = Physics2D.Raycast(transform.position + new Vector3(0.35f, -0.9f, 0), -Vector2.up, 0.1f, floorLayerMask);
 
         // If they hit something that is the ground
         if (downwardRayLeft.collider != null || downwardRayRight.collider != null)
