@@ -133,6 +133,8 @@ public class PlayerBrain : MonoBehaviour
         // Call our movement functions
         playerMove(moveVector);
         flipSprite(moveX);
+        walkAnim(moveX);
+        jumpAnim();
         playerJump(moveVector);
         checkAirTime();
         playerWall(moveVector);
@@ -436,6 +438,52 @@ public class PlayerBrain : MonoBehaviour
                 // unflip the sprite
                 playerSprite.flipX = false;
             }
+        }
+    }
+
+    private void walkAnim(float moveX)
+    {
+        // If the moveX is negative or positive
+        if (moveX < 0f || moveX > 0f)
+        {
+            // set animation
+            animator = this.GetComponentInChildren<Animator>();
+            animator.SetBool("walking", true);
+        }
+
+        // Otherwise, if the movex is 0
+        else if (moveX == 0f)
+        {
+            // set animation
+            animator = this.GetComponentInChildren<Animator>();
+            animator.SetBool("walking", false);
+        }
+    }
+
+    private void jumpAnim()
+    {
+        // If not grounded, set jump animation
+        if (!grounded)
+        {
+            // set animation
+            animator = this.GetComponentInChildren<Animator>();
+            animator.SetInteger("jump", 1);
+        }
+
+        // if falling, set fall animation
+        if (!grounded && rb.velocity.y < 0f)
+        {
+            // set animation
+            animator = this.GetComponentInChildren<Animator>();
+            animator.SetInteger("jump", 2);
+        }
+
+        // landing
+        if (grounded)
+        {
+            // set animation
+            animator = this.GetComponentInChildren<Animator>();
+            animator.SetInteger("jump", 0);
         }
     }
 
