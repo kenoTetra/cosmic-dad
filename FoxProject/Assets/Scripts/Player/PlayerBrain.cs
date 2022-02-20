@@ -68,9 +68,9 @@ public class PlayerBrain : MonoBehaviour
 
     [Range(3f,8f)]
     public float shieldThrowDistance = 4.0f;
-    public float shieldThrowbackY = 3f;
-    public float shieldThrowbackXMult = 1f;
-    private float shieldThrowbackX = 0f;
+    //public float shieldThrowbackY = 3f;
+    //public float shieldThrowbackXMult = 1f;
+    //private float shieldThrowbackX = 0f;
     [HideInInspector]
     public int shieldsOut = 0;
 
@@ -98,6 +98,7 @@ public class PlayerBrain : MonoBehaviour
     AudioSource audioSource;
     Animator animator;
     Coroutine lastCoroutine = null;
+    public GameObject currentCheckpoint;
 
     void Start()
     {
@@ -169,11 +170,24 @@ public class PlayerBrain : MonoBehaviour
     // Checks for triggers
     void OnTriggerEnter2D(Collider2D col)
     {
+        // If the player collects a double jump wing, let them double jump.
         if (col.gameObject.CompareTag("Wing")) 
         {
             print("Wing collected! " + col.gameObject.name);
             col.gameObject.SetActive(false);
             canDoubleJump = true;
+        }
+
+        if (col.gameObject.CompareTag("Checkpoint"))
+        {
+            print("Checkpoint hit: " + col.gameObject.name);
+            currentCheckpoint = col.gameObject;
+        }
+
+        if (col.gameObject.CompareTag("Hazard"))
+        {
+            print ("Hazard hit! " + col.gameObject.name);
+            this.transform.position = currentCheckpoint.transform.position;
         }
     }
 
