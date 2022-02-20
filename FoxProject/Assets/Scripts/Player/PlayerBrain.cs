@@ -26,6 +26,7 @@ public class PlayerBrain : MonoBehaviour
     // Jump
     private float jumpBufferLeft = 0.175f;
     public float jumpBufferMax = 0.175f;
+    public float odysseyJump = 12;
     public bool canDoubleJump = false;
     [Space(5)]
 
@@ -67,15 +68,25 @@ public class PlayerBrain : MonoBehaviour
 
     [Range(3f,8f)]
     public float shieldThrowDistance = 4.0f;
-    private int shieldsOut = 0;
+    [HideInInspector]
+    public int shieldsOut = 0;
+
+    // Reset Buffer for Shields
+    private float resetHoldMax;
+    private float resetCurrent;
 
     // SFX
     private AudioClip shieldthrow;
     private AudioClip jumpSound;
     private AudioClip groundLand;
 
+    // HUD
+    [HideInInspector]
+    public float currentResetTime = 1f;
+
     // Other
     private bool switchCase = false;
+    private float shieldSize = 1.5f;
     SpriteRenderer playerSprite;
     Rigidbody2D rb;
     LayerMask groundLayerMask;
@@ -83,6 +94,7 @@ public class PlayerBrain : MonoBehaviour
     LayerMask floorLayerMask;
     AudioSource audioSource;
     Animator animator;
+    Coroutine lastCoroutine = null;
 
     void Start()
     {
@@ -114,6 +126,12 @@ public class PlayerBrain : MonoBehaviour
 
         print("Shields found! # of shields: " + shieldsList.Count);
 
+        // Set the shield size dependent on the scale X/2
+        if (shieldsList[0] != null)
+        {
+            shieldSize = shieldsList[0].transform.localScale.x;
+        }
+
         //Load Sound Effects
         shieldthrow = (AudioClip)Resources.Load("SFX/shieldthrow");
         jumpSound = (AudioClip)Resources.Load("SFX/jump");
@@ -134,8 +152,8 @@ public class PlayerBrain : MonoBehaviour
         playerMove(moveVector);
         flipSprite(moveX);
         walkAnim(moveX);
-        jumpAnim();
         playerJump(moveVector);
+        jumpAnim();
         checkAirTime();
         playerWall(moveVector);
         throwShield();
@@ -208,6 +226,52 @@ public class PlayerBrain : MonoBehaviour
             canDoubleJump = false;
         }
         
+    }
+
+    private void walkAnim(float moveX)
+    {
+        // If the moveX is negative or positive
+        if (moveX < 0f || moveX > 0f)
+        {
+            // set animation
+            animator = this.GetComponentInChildren<Animator>();
+            animator.SetBool("walking", true);
+        }
+
+        // Otherwise, if the movex is 0
+        else if (moveX == 0f)
+        {
+            // set animation
+            animator = this.GetComponentInChildren<Animator>();
+            animator.SetBool("walking", false);
+        }
+    }
+
+    private void jumpAnim()
+    {
+        // If not grounded, set jump animation
+        if (!grounded)
+        {
+            // set animation
+            animator = this.GetComponentInChildren<Animator>();
+            animator.SetInteger("jump", 1);
+        }
+
+        // if falling, set fall animation
+        if (!grounded && rb.velocity.y < 0f)
+        {
+            // set animation
+            animator = this.GetComponentInChildren<Animator>();
+            animator.SetInteger("jump", 2);
+        }
+
+        // landing
+        if (grounded)
+        {
+            // set animation
+            animator = this.GetComponentInChildren<Animator>();
+            animator.SetInteger("jump", 0);
+        }
     }
 
     private void playerWall(Vector2 dir)
@@ -441,67 +505,15 @@ public class PlayerBrain : MonoBehaviour
         }
     }
 
-    private void walkAnim(float moveX)
-    {
-        // If the moveX is negative or positive
-        if (moveX < 0f || moveX > 0f)
-        {
-            // set animation
-            animator = this.GetComponentInChildren<Animator>();
-            animator.SetBool("walking", true);
-        }
-
-        // Otherwise, if the movex is 0
-        else if (moveX == 0f)
-        {
-            // set animation
-            animator = this.GetComponentInChildren<Animator>();
-            animator.SetBool("walking", false);
-        }
-    }
-
-    private void jumpAnim()
-    {
-        // If not grounded, set jump animation
-        if (!grounded)
-        {
-            // set animation
-            animator = this.GetComponentInChildren<Animator>();
-            animator.SetInteger("jump", 1);
-        }
-
-        // if falling, set fall animation
-        if (!grounded && rb.velocity.y < 0f)
-        {
-            // set animation
-            animator = this.GetComponentInChildren<Animator>();
-            animator.SetInteger("jump", 2);
-        }
-
-        // landing
-        if (grounded)
-        {
-            // set animation
-            animator = this.GetComponentInChildren<Animator>();
-            animator.SetInteger("jump", 0);
-        }
-    }
-
     private void throwShield()
     {
         if(Input.GetAxis("ShieldThrowKeys") != 0 && shieldsOut != shieldsList.Count - 1)
         {
-            // Get Player Y to set to shield.
-            float shieldX = 0;
-            float shieldY = this.transform.position.y;
-
-            // Defaults to left if a null gets thrown
-            string shieldD = "Left";
-
             // Cast a ray out on both sides, because fuck.
             RaycastHit2D leftShieldRay = Physics2D.Raycast(transform.position, Vector2.left, shieldThrowDistance, groundLayerMask);
             RaycastHit2D rightShieldRay = Physics2D.Raycast(transform.position, Vector2.right, shieldThrowDistance, groundLayerMask);
 
+            // Cancel the throw if they'd overlap
             if(Physics2D.Raycast(transform.position, Vector2.left, shieldThrowDistance, shieldLayerMask) && Input.GetAxis("ShieldThrowKeys") == -1 && !switchCase
             || Physics2D.Raycast(transform.position, Vector2.right, shieldThrowDistance, shieldLayerMask) && Input.GetAxis("ShieldThrowKeys") == 1 && !switchCase)
             {
@@ -509,66 +521,142 @@ public class PlayerBrain : MonoBehaviour
                 print("owned");
             }
 
-            // Get the player sprite direction, shoot the ray in the direction that they're facing
+            // If you shoot it out left, it goes left. EZ mode
             else if(Input.GetAxis("ShieldThrowKeys") == -1 && leftShieldRay && !switchCase)
             {
-                // Sets the Shield's X to the distance from the player +/- 1 so the shield doesn't clip in the wall.
-                shieldX = this.transform.position.x - leftShieldRay.distance + .5f;
-                print("Found an object - distance: " + leftShieldRay.distance);
-                shieldD = "Left";
-                spawnShield(shieldX, shieldY, shieldD);
-                audioSource.PlayOneShot(shieldthrow, 0.6F);
-                switchCase = true;
-
+                shieldHit("Left", leftShieldRay);
             }
 
-            // Get the player sprite direction, shoot the ray in the direction that they're facing
+            // If you shoot it our right, it goes right.
             else if(Input.GetAxis("ShieldThrowKeys") == 1 && rightShieldRay && !switchCase)
             {
-                // Sets the Shield's X to the distance from the player +/- 1 so the shield doesn't clip in the wall.
-                shieldX = this.transform.position.x + rightShieldRay.distance - .5f;
-                print("Found an object - distance: " + rightShieldRay.distance);
-                shieldD = "Right";
-                spawnShield(shieldX, shieldY, shieldD);
-                audioSource.PlayOneShot(shieldthrow, 0.6F);
-                switchCase = true;
+                shieldHit("Right", rightShieldRay);
             }
 
-            // Get the player sprite direction, puts the shield out as far as the ray is cast
-            else if(!switchCase)
+            // If nothing is found, set it out the ray distance.
+            else if(Input.GetAxis("ShieldThrowKeys") == -1 && !switchCase)
             {
-                // If nothing is found, set it out the ray distance.
-                if(Input.GetAxis("ShieldThrowKeys") == -1)
-                {
-                    shieldX = this.transform.position.x - shieldThrowDistance + .5f;
-                    shieldD = "Left";
-                    switchCase = true;
-                }
-                else if(Input.GetAxis("ShieldThrowKeys") == 1)
-                {
-                    shieldX = this.transform.position.x + shieldThrowDistance - .5f;
-                    shieldD = "Right";
-                    switchCase = true;
-                }
-                print("No object found!");
-                spawnShield(shieldX, shieldY, shieldD);
-                audioSource.PlayOneShot(shieldthrow, 0.6F);
+                shieldNoHit("Left");
+            }
+
+            else if(Input.GetAxis("ShieldThrowKeys") == 1 && !switchCase)
+            {
+                shieldNoHit("Right");
             }
         }
 
+        // Using an axis as a button requires a switch case, if the button isn't being pressed
+        // anymore, return the switch case back to false so we can use it again.
         if(Input.GetAxis("ShieldThrowKeys") == 0)
         {
             switchCase = false;
         }
 
+        shieldResetChecker();
+    }
+
+    private void shieldResetChecker()
+    {
+        // If the reset key is held, start the shield reset coroutine
         if(Input.GetKeyDown(resetKey))
         {
-            foreach (GameObject shieldID in shieldsList)
+            lastCoroutine = StartCoroutine(shieldReset());
+        }
+
+        // If you release OR release before the coroutine is finished, stop the coroutine.
+        if(Input.GetKey(resetKey) && currentResetTime <= 0 || Input.GetKeyUp(resetKey))
+        {
+            StopCoroutine(lastCoroutine);
+            currentResetTime = 1f;
+        }
+    }
+
+    private void shieldHit(string shieldD, RaycastHit2D rayCasted)
+    {
+        float shieldX = 0;
+
+        // If your shield hit a wall when you shoot left...
+        if(shieldD == "Left" && rayCasted.distance < shieldThrowDistance)
+        {
+            // Throws it into the wall at the distance for the cast given room for the full shield on the outside
+            shieldX = this.transform.position.x - rayCasted.distance + (shieldSize / 2);
+        }
+        
+        // again for the right
+        else if(shieldD == "Right" && rayCasted.distance < shieldThrowDistance)
+        {
+            shieldX = this.transform.position.x + rayCasted.distance - (shieldSize / 2);
+        }
+        
+        print("Found an object - distance: " + rayCasted.distance);
+
+        // If you're ending up with a shield in your face...
+        if(rayCasted.distance < 2.5f)
+        {
+            // Notify console
+            print("You're in it, sicko");
+        }
+
+        // Spawns a shield at the shield direction
+        spawnShield(shieldX, this.transform.position.y, shieldD);
+
+        // Closeup audio + var changes
+        audioSource.PlayOneShot(shieldthrow, 0.6F);
+        switchCase = true;
+    }
+
+    private void shieldNoHit(string shieldD)
+    {
+        float shieldX = 0;
+
+        // If your shield hit a wall when you shoot left...
+        if(shieldD == "Left")
+        {
+            // Throws it into the wall at the distance for the cast given room for the full shield on the outside
+            shieldX = this.transform.position.x - shieldThrowDistance + (shieldSize / 2);
+        }
+        
+        // again for the right
+        else if(shieldD == "Right")
+        {
+            shieldX = this.transform.position.x + shieldThrowDistance - (shieldSize / 2);
+        }
+        
+        print("No object found :(");
+
+        // Spawns a shield at the shield direction
+        spawnShield(shieldX, this.transform.position.y, shieldD);
+
+        // Closeup audio + var changes
+        audioSource.PlayOneShot(shieldthrow, 0.6F);
+        switchCase = true;
+    }
+
+    IEnumerator shieldReset()
+    {
+        currentResetTime = 1f;
+
+        if(Input.GetKeyUp(resetKey))
+        {
+            yield break;
+        }
+
+        while(true)
+        {
+            yield return new WaitForEndOfFrame();
+            currentResetTime -= Time.deltaTime;
+        
+            if (currentResetTime <= 0)
             {
-                shieldID.transform.position = new Vector2(0, -50.0f);
+               foreach (GameObject shieldID in shieldsList)
+               {
+                   shieldID.transform.position = new Vector2(0, -50.0f);
+               }
+
+               shieldsOut = 0;
+               yield break;
             }
 
-            shieldsOut = 0;
         }
     }
 
@@ -589,6 +677,14 @@ public class PlayerBrain : MonoBehaviour
             animator.SetTrigger(shieldD);
             shieldsOut += 1;
 
+            // Give the player a little "oomf" in the air.
+            if(!grounded)
+            {
+                rb.velocity = (new Vector2(rb.velocity.x * speed, 0));
+                rb.velocity += Vector2.up * odysseyJump;
+            }
+            
+            
             print("Shield thrown: " + shieldsOut);
         }
         
