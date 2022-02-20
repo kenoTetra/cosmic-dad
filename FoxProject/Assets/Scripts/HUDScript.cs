@@ -11,6 +11,7 @@ public class HUDScript : MonoBehaviour
     public Image fillBar;
     public TextMeshProUGUI currentShields;
     public TextMeshProUGUI maxShields;
+    public GameObject RKey;
 
     // Start is called before the first frame update
     void Start()
@@ -25,5 +26,15 @@ public class HUDScript : MonoBehaviour
         fillBar.fillAmount = 1 - playerScript.currentResetTime;
         currentShields.text = playerScript.shieldsOut.ToString();
         maxShields.text = (playerScript.shieldsList.Count - 1).ToString();
+
+        if (playerScript.shieldsList.Count - 1 == playerScript.shieldsOut)
+        {
+            RKey.SetActive(true);
+        }
+
+        else
+        {
+            RKey.SetActive(false);
+        }
     }
 }

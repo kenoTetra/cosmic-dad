@@ -68,6 +68,9 @@ public class PlayerBrain : MonoBehaviour
 
     [Range(3f,8f)]
     public float shieldThrowDistance = 4.0f;
+    public float shieldThrowbackY = 3f;
+    public float shieldThrowbackXMult = 1f;
+    private float shieldThrowbackX = 0f;
     [HideInInspector]
     public int shieldsOut = 0;
 
@@ -591,10 +594,11 @@ public class PlayerBrain : MonoBehaviour
         print("Found an object - distance: " + rayCasted.distance);
 
         // If you're ending up with a shield in your face...
-        if(rayCasted.distance < 2.5f)
+        if(rayCasted.distance < 2.5f && grounded)
         {
             // Notify console
             print("You're in it, sicko");
+            
         }
 
         // Spawns a shield at the shield direction
