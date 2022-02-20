@@ -4886,7 +4886,7 @@ Rigidbody2D:
   m_AngularDrag: 0
   m_GravityScale: 1
   m_Material: {fileID: 6200000, guid: 81f559290b217d6488261d79f1fd4d62, type: 2}
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
@@ -5002,19 +5002,26 @@ MonoBehaviour:
   lowJumpMultiplier: 2
   grounded: 1
   touchingWall: 0
+  totalAirTime: 0
+  airTimeGripReq: 0.5
   coyoteTimeMax: 0.3
   jumpBufferMax: 0.175
+  odysseyJump: 12
   canDoubleJump: 0
   jumpOffSpeed: 1.5
   wallJumped: 0
-  jumpForce: 10
+  jumpForce: 11
   jumpLerp: 5
   speed: 10
-  slideSpeed: 1
+  slideSpeed: 2
   clampNumber: 22
   shieldsList: []
   resetKey: r
   shieldThrowDistance: 6.5
+  shieldThrowbackY: 3
+  shieldThrowbackXMult: 1
+  shieldsOut: 0
+  currentResetTime: 1
 --- !u!1 &7532610979245952856
 GameObject:
   m_ObjectHideFlags: 0
