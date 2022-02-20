@@ -8,6 +8,7 @@ TagManager:
   - Wing
   - Shield
   - Hazard
+  - Checkpoint
   layers:
   - Default
   - TransparentFX
