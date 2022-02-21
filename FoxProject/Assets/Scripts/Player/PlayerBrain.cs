@@ -82,6 +82,8 @@ public class PlayerBrain : MonoBehaviour
     private AudioClip shieldthrow;
     private AudioClip jumpSound;
     private AudioClip groundLand;
+    private AudioClip death;
+    private AudioClip reload;
 
     // HUD
     [HideInInspector]
@@ -140,6 +142,8 @@ public class PlayerBrain : MonoBehaviour
         shieldthrow = (AudioClip)Resources.Load("SFX/shieldthrow");
         jumpSound = (AudioClip)Resources.Load("SFX/jump");
         groundLand = (AudioClip)Resources.Load("SFX/groundland");
+        death = (AudioClip)Resources.Load("SFX/death");
+        reload = (AudioClip)Resources.Load("SFX/reload");
     }
 
     void Update()
@@ -188,6 +192,7 @@ public class PlayerBrain : MonoBehaviour
         {
             print ("Hazard hit! " + col.gameObject.name);
             this.transform.position = currentCheckpoint.transform.position;
+            audioSource.PlayOneShot(death, 0.7F);
         }
     }
 
@@ -672,7 +677,8 @@ public class PlayerBrain : MonoBehaviour
                }
 
                shieldsOut = 0;
-               yield break;
+                audioSource.PlayOneShot(reload, 0.7F);
+                yield break;
             }
 
         }

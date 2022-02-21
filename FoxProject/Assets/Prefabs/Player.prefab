@@ -5018,10 +5018,9 @@ MonoBehaviour:
   shieldsList: []
   resetKey: r
   shieldThrowDistance: 6.5
-  shieldThrowbackY: 3
-  shieldThrowbackXMult: 1
   shieldsOut: 0
   currentResetTime: 1
+  currentCheckpoint: {fileID: 0}
 --- !u!1 &7532610979245952856
 GameObject:
   m_ObjectHideFlags: 0
@@ -5032,6 +5031,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7532610979245952857}
   - component: {fileID: 7532610979245952858}
+  - component: {fileID: 2703431826628968607}
   m_Layer: 3
   m_Name: PlayerSprite
   m_TagString: Untagged
@@ -5105,6 +5105,25 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!95 &2703431826628968607
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7532610979245952856}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: c1a87c77df559bd46a0f3f91e50848d3, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &7532610979821724570
 GameObject:
   m_ObjectHideFlags: 0
