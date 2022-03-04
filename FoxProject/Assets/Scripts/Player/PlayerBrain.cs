@@ -184,8 +184,15 @@ public class PlayerBrain : MonoBehaviour
 
         if (col.gameObject.CompareTag("Checkpoint"))
         {
+            if(currentCheckpoint != null)
+            {
+                animator = currentCheckpoint.GetComponentInChildren<Animator>();
+                animator.SetBool("activated", false);
+            }
             print("Checkpoint hit: " + col.gameObject.name);
             currentCheckpoint = col.gameObject;
+            animator = col.gameObject.GetComponentInChildren<Animator>();
+            animator.SetBool("activated", true);
         }
 
         if (col.gameObject.CompareTag("Hazard"))
