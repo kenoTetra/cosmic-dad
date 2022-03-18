@@ -489,8 +489,8 @@ InputManager:
     m_Name: ShieldThrowKeys
     descriptiveName: throw da shild baybee
     descriptiveNegativeName: 
-    negativeButton: j
-    positiveButton: l
+    negativeButton: mouse 0
+    positiveButton: mouse 1
     altNegativeButton: 
     altPositiveButton: 
     gravity: 10

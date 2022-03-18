@@ -63,7 +63,8 @@ public class PlayerBrain : MonoBehaviour
     // Shields
     [Header("Shields")]
     public List<GameObject> shieldsList = new List<GameObject>();
-
+    private int timesShieldsIncreased = 0;
+    private bool shieldThrownInAir = false;
     public string resetKey = "r";
 
     [Range(3f,8f)]
@@ -88,6 +89,9 @@ public class PlayerBrain : MonoBehaviour
     // HUD
     [HideInInspector]
     public float currentResetTime = 1f;
+
+    // Death Checker
+    public bool playerNaenae = false;
 
     // Other
     private bool switchCase = false;
@@ -125,10 +129,7 @@ public class PlayerBrain : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
 
         // Set Shield List
-        foreach(GameObject shieldID in GameObject.FindGameObjectsWithTag("Shield")) 
-        {
-             shieldsList.Add(shieldID);
-        }
+        addToList("Shield", shieldsList);
 
         print("Shields found! # of shields: " + shieldsList.Count);
 
@@ -182,6 +183,7 @@ public class PlayerBrain : MonoBehaviour
             canDoubleJump = true;
         }
 
+        // checkpoints - hit one, it works!
         if (col.gameObject.CompareTag("Checkpoint"))
         {
             if(currentCheckpoint != null)
@@ -195,11 +197,44 @@ public class PlayerBrain : MonoBehaviour
             animator.SetBool("activated", true);
         }
 
+        // Spikes - hit one and die
         if (col.gameObject.CompareTag("Hazard"))
         {
             print ("Hazard hit! " + col.gameObject.name);
             this.transform.position = currentCheckpoint.transform.position;
+            playerNaenae = true;
             audioSource.PlayOneShot(death, 0.7F);
+        }
+
+        // Walk into a TriggerShieldsIncrease zone is a one time use--
+        // Increases your shield count by however many shields are active in each tag: ShieldsIncrease1, ShieldsIncrease2...
+        if (col.gameObject.CompareTag("TriggerShieldsIncrease"))
+        {
+            if(timesShieldsIncreased == 2) 
+            {
+                addToList("ShieldsIncrease3", shieldsList);
+            }
+
+            else if(timesShieldsIncreased == 1)
+            {
+                addToList("ShieldsIncrease2", shieldsList);
+            }
+
+            else
+            {
+                addToList("ShieldsIncrease1", shieldsList);
+            }
+
+            col.gameObject.SetActive(false);
+        }
+
+        // Hit a ResetAllShields to remove all added shields.
+        if (col.gameObject.CompareTag("ResetAllShields"))
+        {
+            shieldsList.Clear();
+            addToList("Shield", shieldsList);
+            timesShieldsIncreased = 0;
+            col.gameObject.SetActive(false);
         }
     }
 
@@ -383,8 +418,8 @@ public class PlayerBrain : MonoBehaviour
             rb.gravityScale = fallMultiplier;
         }  
         
-        // If the player is not holding jump and they are going upwards
-        else if (rb.velocity.y > 0 && Input.GetAxis("Jump") == 0) 
+        // If the player is not holding jump and they are going upwards OR they've thrown a shield in air...
+        else if (rb.velocity.y > 0 && Input.GetAxis("Jump") == 0 || shieldThrownInAir == true) 
         {
             rb.gravityScale = lowJumpMultiplier;
         }
@@ -459,6 +494,8 @@ public class PlayerBrain : MonoBehaviour
             grounded = true;
             // Also, reset the walljump.
             wallJumped = false;
+            // Also, reset the gravity destroyer for in-air shield jumps.
+            shieldThrownInAir = false;
         }
         else
         {
@@ -598,6 +635,17 @@ public class PlayerBrain : MonoBehaviour
             StopCoroutine(lastCoroutine);
             currentResetTime = 1f;
         }
+
+        // OR if the player dies.
+        if(playerNaenae)
+        {
+            foreach (GameObject shieldID in shieldsList)
+            {
+                shieldID.transform.position = new Vector2(0, -50.0f);
+                shieldsOut = 0;
+                playerNaenae = false;
+            }
+        }
     }
 
     private void shieldHit(string shieldD, RaycastHit2D rayCasted)
@@ -702,16 +750,25 @@ public class PlayerBrain : MonoBehaviour
 
         if (shieldsList[shieldsOut] != null  && shieldsOut != shieldsList.Count - 1)
         {
+            // Turn the shield on
             shieldsList[shieldsOut].SetActive(true);
-            shieldsList[shieldsOut].transform.position = new Vector3(shieldX, shieldY, 0);
+
+            // Throw out the shield!
+            shieldsList[shieldsOut].transform.position = new Vector3(shieldX, shieldY - .25f, 0);
+
+            // Animate...
             animator = shieldsList[shieldsOut].GetComponentInChildren<Animator>();
             animator.SetTrigger(shieldD);
+            
+            // And update how many shields have been thrown!
             shieldsOut += 1;
 
             // Give the player a little "oomf" in the air.
+            // Like cloud mario.
             if(!grounded)
             {
-                rb.velocity = (new Vector2(rb.velocity.x * speed, 0));
+                shieldThrownInAir = true;
+                rb.velocity = (new Vector2(rb.velocity.x, 0));
                 rb.velocity += Vector2.up * odysseyJump;
             }
             
@@ -744,6 +801,14 @@ public class PlayerBrain : MonoBehaviour
         if(this.rb.velocity.y < -clampNumber)
         {
             rb.velocity = new Vector2(rb.velocity.x, -clampNumber);
+        }
+    }
+
+    private void addToList(string Tag, List<GameObject> listToAddTo)
+    {
+        foreach(GameObject shieldID in GameObject.FindGameObjectsWithTag(Tag)) 
+        {
+             listToAddTo.Add(shieldID);
         }
     }
 }

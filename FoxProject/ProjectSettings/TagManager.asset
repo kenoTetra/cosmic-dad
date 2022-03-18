@@ -9,6 +9,11 @@ TagManager:
   - Shield
   - Hazard
   - Checkpoint
+  - ShieldsIncrease1
+  - ShieldsIncrease2
+  - ShieldsIncrease3
+  - TriggerShieldsIncrease
+  - ResetAllShields
   layers:
   - Default
   - TransparentFX
