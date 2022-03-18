@@ -54,11 +54,13 @@ public class PlayerBrain : MonoBehaviour
     public float clampNumber = 23f;
     [Space(10)]
 
-    // Particles
+    /*
+    Old Slide particle systems.
     private GameObject slideLeft;
     private GameObject slideRight;
     private ParticleSystem slideLeftParticles;
     private ParticleSystem slideRightParticles;
+    */
 
     // Shields
     [Header("Shields")]
@@ -116,11 +118,12 @@ public class PlayerBrain : MonoBehaviour
         floorLayerMask =~ (LayerMask.GetMask("Player"));
         shieldLayerMask = (LayerMask.GetMask("Shield"));
 
-        // Particle Systems
+        /* Particle Systems for sliding.
         slideLeft = GameObject.Find("Sliding Left");
         slideRight = GameObject.Find("Sliding Right");
         slideLeftParticles = slideLeft.GetComponent<ParticleSystem>();
         slideRightParticles = slideRight.GetComponent<ParticleSystem>();
+        */
 
         // Gets the sprite to flip
         playerSprite = GetComponentInChildren<SpriteRenderer>();
@@ -193,6 +196,7 @@ public class PlayerBrain : MonoBehaviour
             }
             print("Checkpoint hit: " + col.gameObject.name);
             currentCheckpoint = col.gameObject;
+            playerNaenae = true;
             animator = col.gameObject.GetComponentInChildren<Animator>();
             animator.SetBool("activated", true);
         }
@@ -379,6 +383,7 @@ public class PlayerBrain : MonoBehaviour
                 wallJumping = false;
             }
 
+            /* FUCK SLIDING ALL MY HOMIES HATE SLIDING 
             // Otherwise, if a player isn't grounded and they arent just in the air
             else if(!grounded && sideTouching != "none")
             {
@@ -400,14 +405,17 @@ public class PlayerBrain : MonoBehaviour
                     slideLeftParticles.Pause();
                 }
             }
+            */
         }
 
+        /* fuck off sliding particles
         // If nothing is happening here, disable particle systems as a just in case scenario.
         else
         {
             slideLeftParticles.Pause();
             slideRightParticles.Pause();
         }
+        */
     }
 
     private void jumpGravityModulator()
