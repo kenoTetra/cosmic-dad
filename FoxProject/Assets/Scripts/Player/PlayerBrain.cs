@@ -689,6 +689,10 @@ public class PlayerBrain : MonoBehaviour
         // Closeup audio + var changes
         audioSource.PlayOneShot(shieldthrow, 0.6F);
         switchCase = true;
+
+        // Play throw animation
+        animator = this.GetComponentInChildren<Animator>();
+        animator.SetTrigger("throw");
     }
 
     private void shieldNoHit(string shieldD)
@@ -716,6 +720,10 @@ public class PlayerBrain : MonoBehaviour
         // Closeup audio + var changes
         audioSource.PlayOneShot(shieldthrow, 0.6F);
         switchCase = true;
+
+        // Play throw animation
+        animator = this.GetComponentInChildren<Animator>();
+        animator.SetTrigger("throw");
     }
 
     IEnumerator shieldReset()
