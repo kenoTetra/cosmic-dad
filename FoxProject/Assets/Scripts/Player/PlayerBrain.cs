@@ -95,6 +95,9 @@ public class PlayerBrain : MonoBehaviour
     // Death Checker
     public bool playerNaenae = false;
 
+    // Loadzone Hit Check
+    public bool loadZoneHit = false;
+
     // Other
     private bool switchCase = false;
     private float shieldSize = 1.5f;
@@ -239,6 +242,12 @@ public class PlayerBrain : MonoBehaviour
             addToList("Shield", shieldsList);
             timesShieldsIncreased = 0;
             col.gameObject.SetActive(false);
+        }
+
+        // Hit a loadzone to advance level.
+        if (col.gameObject.CompareTag("Loadzone"))
+        {
+            loadZoneHit = true;
         }
     }
 

@@ -14,6 +14,7 @@ TagManager:
   - ShieldsIncrease3
   - TriggerShieldsIncrease
   - ResetAllShields
+  - Loadzone
   layers:
   - Default
   - TransparentFX
