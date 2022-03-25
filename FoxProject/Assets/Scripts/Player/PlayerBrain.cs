@@ -118,7 +118,7 @@ public class PlayerBrain : MonoBehaviour
 
         // Gets the ground's layer and sets a var to it
         groundLayerMask = (LayerMask.GetMask("Ground"));
-        floorLayerMask =~ (LayerMask.GetMask("Player"));
+        floorLayerMask = (LayerMask.GetMask("Ground", "Shield"));
         shieldLayerMask = (LayerMask.GetMask("Shield"));
 
         /* Particle Systems for sliding.
@@ -341,14 +341,6 @@ public class PlayerBrain : MonoBehaviour
             animator = this.GetComponentInChildren<Animator>();
             animator.SetInteger("jump", 2);
         }
-
-        // landing
-        if (grounded)
-        {
-            // set animation
-            animator = this.GetComponentInChildren<Animator>();
-            animator.SetInteger("jump", 0);
-        }
     }
 
     private void playerWall(Vector2 dir)
@@ -370,6 +362,9 @@ public class PlayerBrain : MonoBehaviour
                     rb.velocity += Vector2.up * jumpForce;
                     // Play jump sound
                     audioSource.PlayOneShot(jumpSound, 0.6F);
+                    // Play squish animation
+                    animator = this.GetComponentInChildren<Animator>();
+                    animator.SetTrigger("jumpsquish");
                     // Sets a split-second walljumping var for doublejump checks
                     wallJumping = true;
                 }
@@ -382,6 +377,9 @@ public class PlayerBrain : MonoBehaviour
                     rb.velocity += Vector2.up * jumpForce;
                     // Play jump sound
                     audioSource.PlayOneShot(jumpSound, 0.6F);
+                    // Play squish animation
+                    animator = this.GetComponentInChildren<Animator>();
+                    animator.SetTrigger("jumpsquish");
                     // Sets a split-second walljumping var for doublejump checks
                     wallJumping = true;
                 }
@@ -502,10 +500,13 @@ public class PlayerBrain : MonoBehaviour
         // If they hit something that is the ground
         if (downwardRayLeft.collider != null || downwardRayRight.collider != null)
         {
-            //Play landing sound once
+            //Play landing sound and animation once
             if (grounded == false)
             {
                 audioSource.PlayOneShot(groundLand, 0.5F);
+                // set animation
+                animator = this.GetComponentInChildren<Animator>();
+                animator.SetInteger("jump", 0);
             }
             // Set grounded to true
             grounded = true;
@@ -795,6 +796,9 @@ public class PlayerBrain : MonoBehaviour
                 shieldThrownInAir = true;
                 rb.velocity = (new Vector2(rb.velocity.x, 0));
                 rb.velocity += Vector2.up * odysseyJump;
+                // Play squish animation
+                animator = this.GetComponentInChildren<Animator>();
+                animator.SetTrigger("jumpsquish");
             }
             
             
