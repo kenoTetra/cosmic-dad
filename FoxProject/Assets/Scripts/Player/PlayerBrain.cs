@@ -225,16 +225,19 @@ public class PlayerBrain : MonoBehaviour
             if(timesShieldsIncreased == 2) 
             {
                 addToList("ShieldsIncrease3", shieldsList);
+                timesShieldsIncreased += 1;
             }
 
             else if(timesShieldsIncreased == 1)
             {
                 addToList("ShieldsIncrease2", shieldsList);
+                timesShieldsIncreased += 1;
             }
 
             else
             {
                 addToList("ShieldsIncrease1", shieldsList);
+                timesShieldsIncreased += 1;
             }
 
             col.gameObject.SetActive(false);
