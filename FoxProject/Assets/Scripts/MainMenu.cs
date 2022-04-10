@@ -11,6 +11,12 @@ public class MainMenu : MonoBehaviour
     public GameObject SettingsPanel;
     public GameObject CreditsPanel;
 
+    void Start()
+    {
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+    }
+
     public void startGame()
     {
         StartCoroutine(loadLevelOne(SceneManager.GetActiveScene().buildIndex + 1));

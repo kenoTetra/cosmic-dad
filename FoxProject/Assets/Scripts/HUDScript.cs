@@ -20,6 +20,8 @@ public class HUDScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
         // Set the gameobjects you need to find for scripts...
         shieldInfo = GameObject.Find("Shield Info");
         playerScript = GameObject.Find("Player").GetComponent<PlayerBrain>();
@@ -85,6 +87,8 @@ public class HUDScript : MonoBehaviour
         MainPanel.SetActive(true);
         Time.timeScale = 0.0f;
         paused = true;
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
     }
 
     public void unpauseGame()
@@ -98,6 +102,8 @@ public class HUDScript : MonoBehaviour
     {
         SettingsPanel.SetActive(true);
         MainPanel.SetActive(false);
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     public void quitGame()

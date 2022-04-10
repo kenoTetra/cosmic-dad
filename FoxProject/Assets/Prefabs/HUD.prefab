@@ -425,17 +425,17 @@ MonoBehaviour:
   m_FillRect: {fileID: 4835646634894641742}
   m_HandleRect: {fileID: 7913418755066986839}
   m_Direction: 0
-  m_MinValue: -80
+  m_MinValue: -50
   m_MaxValue: 0
   m_WholeNumbers: 0
-  m_Value: 0
+  m_Value: -20
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4578098251728818680}
         m_TargetAssemblyTypeName: SettingsMenu, Assembly-CSharp
         m_MethodName: setVolume
-        m_Mode: 4
+        m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

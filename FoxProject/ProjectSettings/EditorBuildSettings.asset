@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Grotto.unity
     guid: d67c775af2652cf4f9a6b6d468f88510
+  - enabled: 1
+    path: Assets/Scenes/Win.unity
+    guid: e9cfd40cea2246848a0dbf72332db4c0
   m_configObjects: {}
