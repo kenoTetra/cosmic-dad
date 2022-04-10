@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5183222789813664916}
   - component: {fileID: 4383064139473944895}
   - component: {fileID: 8559420841279979638}
-  m_Layer: 6
+  m_Layer: 7
   m_Name: shieldsprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -114,7 +114,7 @@ GameObject:
   - component: {fileID: 6675539118997912515}
   - component: {fileID: 6830528687600976382}
   - component: {fileID: 3094865705487878984}
-  m_Layer: 6
+  m_Layer: 7
   m_Name: Shield1
   m_TagString: Shield
   m_Icon: {fileID: 0}

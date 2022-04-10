@@ -197,9 +197,14 @@ public class PlayerBrain : MonoBehaviour
                 animator = currentCheckpoint.GetComponentInChildren<Animator>();
                 animator.SetBool("activated", false);
             }
+
+            if(currentCheckpoint != col.gameObject)
+            {
+                playerNaenae = true;
+            }
+
             print("Checkpoint hit: " + col.gameObject.name);
             currentCheckpoint = col.gameObject;
-            playerNaenae = true;
             animator = col.gameObject.GetComponentInChildren<Animator>();
             animator.SetBool("activated", true);
         }
@@ -641,8 +646,11 @@ public class PlayerBrain : MonoBehaviour
 
     private void shieldResetChecker()
     {
+        RaycastHit2D downwardRayLeft = Physics2D.Raycast(transform.position + new Vector3(-0.35f, -0.9f, 0), -Vector2.up, 0.1f, groundLayerMask);
+        RaycastHit2D downwardRayRight = Physics2D.Raycast(transform.position + new Vector3(0.35f, -0.9f, 0), -Vector2.up, 0.1f, groundLayerMask);
+
         // If the reset key is held, start the shield reset coroutine
-        if(Input.GetKeyDown(resetKey))
+        if(Input.GetKeyDown(resetKey) && downwardRayLeft.collider != null || Input.GetKeyDown(resetKey) && downwardRayRight.collider != null)
         {
             lastCoroutine = StartCoroutine(shieldReset());
         }

@@ -13,6 +13,9 @@ public class HUDScript : MonoBehaviour
     public TextMeshProUGUI maxShields;
     public GameObject RKey;
     private GameObject shieldInfo;
+    public GameObject MainPanel;
+    public GameObject SettingsPanel;
+    public bool paused;
 
     // Start is called before the first frame update
     void Start()
@@ -60,5 +63,46 @@ public class HUDScript : MonoBehaviour
         {
             RKey.SetActive(false);
         }
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown("escape"))
+        {
+            if(paused) 
+            {
+                unpauseGame();
+            }
+            else
+            {
+                pauseGame();
+            }
+        }
+    }
+
+    public void pauseGame()
+    {
+        MainPanel.SetActive(true);
+        Time.timeScale = 0.0f;
+        paused = true;
+    }
+
+    public void unpauseGame()
+    {
+        MainPanel.SetActive(false);
+        Time.timeScale = 1.0f;
+        paused = false;
+    }
+
+    public void openSettings()
+    {
+        SettingsPanel.SetActive(true);
+        MainPanel.SetActive(false);
+    }
+
+    public void quitGame()
+    {
+        Application.Quit();
+        Debug.Log("Quitting...");
     }
 }
