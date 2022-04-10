@@ -87,6 +87,8 @@ public class PlayerBrain : MonoBehaviour
     private AudioClip groundLand;
     private AudioClip death;
     private AudioClip reload;
+    private AudioClip breadGrab;
+    private AudioClip checkpointLit;
 
     // HUD
     [HideInInspector]
@@ -150,7 +152,9 @@ public class PlayerBrain : MonoBehaviour
         jumpSound = (AudioClip)Resources.Load("SFX/jump");
         groundLand = (AudioClip)Resources.Load("SFX/groundland");
         death = (AudioClip)Resources.Load("SFX/death");
-        reload = (AudioClip)Resources.Load("SFX/reload");
+        reload = (AudioClip)Resources.Load("SFX/recall");
+        breadGrab = (AudioClip)Resources.Load("SFX/breadgrab");
+        checkpointLit = (AudioClip)Resources.Load("SFX/candle");
     }
 
     void Update()
@@ -201,6 +205,10 @@ public class PlayerBrain : MonoBehaviour
             currentCheckpoint = col.gameObject;
             playerNaenae = true;
             animator = col.gameObject.GetComponentInChildren<Animator>();
+            if (animator.GetBool("activated") == false)
+            {
+                audioSource.PlayOneShot(checkpointLit, 0.7F);
+            }
             animator.SetBool("activated", true);
         }
 
@@ -220,16 +228,19 @@ public class PlayerBrain : MonoBehaviour
             if(timesShieldsIncreased == 2) 
             {
                 addToList("ShieldsIncrease3", shieldsList);
+                audioSource.PlayOneShot(breadGrab, 1.2F);
             }
 
             else if(timesShieldsIncreased == 1)
             {
                 addToList("ShieldsIncrease2", shieldsList);
+                audioSource.PlayOneShot(breadGrab, 1.2F);
             }
 
             else
             {
                 addToList("ShieldsIncrease1", shieldsList);
+                audioSource.PlayOneShot(breadGrab, 1.2F);
             }
 
             col.gameObject.SetActive(false);
@@ -321,6 +332,19 @@ public class PlayerBrain : MonoBehaviour
             // set animation
             animator = this.GetComponentInChildren<Animator>();
             animator.SetBool("walking", false);
+        }
+
+        // Just gonna throw sliding check in here too i guess
+        if(touchingWall == true)
+        {
+            animator = this.GetComponentInChildren<Animator>();
+            animator.SetBool("sliding", true);
+        }
+
+        else if (touchingWall == false)
+        {
+            animator = this.GetComponentInChildren<Animator>();
+            animator.SetBool("sliding", false);
         }
     }
 
@@ -503,7 +527,7 @@ public class PlayerBrain : MonoBehaviour
             //Play landing sound and animation once
             if (grounded == false)
             {
-                audioSource.PlayOneShot(groundLand, 0.5F);
+                audioSource.PlayOneShot(groundLand, 0.3F);
                 // set animation
                 animator = this.GetComponentInChildren<Animator>();
                 animator.SetInteger("jump", 0);
@@ -697,7 +721,7 @@ public class PlayerBrain : MonoBehaviour
         spawnShield(shieldX, this.transform.position.y, shieldD);
 
         // Closeup audio + var changes
-        audioSource.PlayOneShot(shieldthrow, 0.6F);
+        audioSource.PlayOneShot(shieldthrow, 0.4F);
         switchCase = true;
 
         // Play throw animation
@@ -728,7 +752,7 @@ public class PlayerBrain : MonoBehaviour
         spawnShield(shieldX, this.transform.position.y, shieldD);
 
         // Closeup audio + var changes
-        audioSource.PlayOneShot(shieldthrow, 0.6F);
+        audioSource.PlayOneShot(shieldthrow, 0.4F);
         switchCase = true;
 
         // Play throw animation
@@ -758,7 +782,7 @@ public class PlayerBrain : MonoBehaviour
                }
 
                shieldsOut = 0;
-                audioSource.PlayOneShot(reload, 0.7F);
+                audioSource.PlayOneShot(reload, 1.2F);
                 yield break;
             }
 
