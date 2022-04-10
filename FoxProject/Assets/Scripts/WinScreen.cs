@@ -2,16 +2,26 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class WinScreen : MonoBehaviour
 {
     public Animator transition;
     public float transitionTime = 0.75f;
+    public TextMeshProUGUI jumps;
+    public TextMeshProUGUI walljumps;
+    public TextMeshProUGUI shieldsThrown;
+    public TextMeshProUGUI deaths;
 
     void Start()
     {
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
+
+        jumps.text = (PlayerPrefs.GetInt("jumps")).ToString();
+        walljumps.text = (PlayerPrefs.GetInt("walljumps")).ToString();
+        shieldsThrown.text = (PlayerPrefs.GetInt("shieldsThrown")).ToString();
+        deaths.text = (PlayerPrefs.GetInt("deaths")).ToString();
     }
     
     public void loadMainMenu()

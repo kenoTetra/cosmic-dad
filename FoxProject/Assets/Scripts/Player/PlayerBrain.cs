@@ -87,6 +87,8 @@ public class PlayerBrain : MonoBehaviour
     private AudioClip groundLand;
     private AudioClip death;
     private AudioClip reload;
+    private AudioClip breadGrab;
+    private AudioClip checkpointLit;
 
     // HUD
     [HideInInspector]
@@ -97,6 +99,18 @@ public class PlayerBrain : MonoBehaviour
 
     // Loadzone Hit Check
     public bool loadZoneHit = false;
+
+    // Checkers for Stats
+    public int deathCount;
+    public int shieldsThrownCount;
+    public int jumpCount;
+    public int wallJumpCount;
+
+    // Timer for Stats
+    public float time;
+    private float msec;
+    private float sec;
+    private float min;
 
     // Other
     private bool switchCase = false;
@@ -128,6 +142,13 @@ public class PlayerBrain : MonoBehaviour
         slideRightParticles = slideRight.GetComponent<ParticleSystem>();
         */
 
+        // Sets stats values
+        jumpCount = PlayerPrefs.GetInt("jumps");
+        wallJumpCount = PlayerPrefs.GetInt("walljumps");
+        shieldsThrownCount = PlayerPrefs.GetInt("shieldsThrown");
+        deathCount = PlayerPrefs.GetInt("deaths");
+
+
         // Gets the sprite to flip
         playerSprite = GetComponentInChildren<SpriteRenderer>();
 
@@ -150,7 +171,9 @@ public class PlayerBrain : MonoBehaviour
         jumpSound = (AudioClip)Resources.Load("SFX/jump");
         groundLand = (AudioClip)Resources.Load("SFX/groundland");
         death = (AudioClip)Resources.Load("SFX/death");
-        reload = (AudioClip)Resources.Load("SFX/reload");
+        reload = (AudioClip)Resources.Load("SFX/recall");
+        breadGrab = (AudioClip)Resources.Load("SFX/breadgrab");
+        checkpointLit = (AudioClip)Resources.Load("SFX/candle");
     }
 
     void Update()
@@ -206,6 +229,10 @@ public class PlayerBrain : MonoBehaviour
             print("Checkpoint hit: " + col.gameObject.name);
             currentCheckpoint = col.gameObject;
             animator = col.gameObject.GetComponentInChildren<Animator>();
+            if (animator.GetBool("activated") == false)
+            {
+                audioSource.PlayOneShot(checkpointLit, 0.7F);
+            }
             animator.SetBool("activated", true);
         }
 
@@ -216,6 +243,8 @@ public class PlayerBrain : MonoBehaviour
             this.transform.position = currentCheckpoint.transform.position;
             playerNaenae = true;
             audioSource.PlayOneShot(death, 0.7F);
+            deathCount += 1;
+            PlayerPrefs.SetInt("deaths", deathCount);
         }
 
         // Walk into a TriggerShieldsIncrease zone is a one time use--
@@ -225,18 +254,21 @@ public class PlayerBrain : MonoBehaviour
             if(timesShieldsIncreased == 2) 
             {
                 addToList("ShieldsIncrease3", shieldsList);
+                audioSource.PlayOneShot(breadGrab, 1.2F);
                 timesShieldsIncreased += 1;
             }
 
             else if(timesShieldsIncreased == 1)
             {
                 addToList("ShieldsIncrease2", shieldsList);
+                audioSource.PlayOneShot(breadGrab, 1.2F);
                 timesShieldsIncreased += 1;
             }
 
             else
             {
                 addToList("ShieldsIncrease1", shieldsList);
+                audioSource.PlayOneShot(breadGrab, 1.2F);
                 timesShieldsIncreased += 1;
             }
 
@@ -298,6 +330,8 @@ public class PlayerBrain : MonoBehaviour
             // Remove coyote time and the jump buffer so you can't double jump
             coyoteTimeLeft = 0f;
             jumpBufferLeft = 0f;
+            jumpCount += 1;
+            PlayerPrefs.SetInt("jumps", jumpCount);
         }
 
         // If you can double jump but can't jump normally and you're not touching something to walljump
@@ -308,6 +342,8 @@ public class PlayerBrain : MonoBehaviour
             rb.velocity += Vector2.up * jumpForce;
 
             // Remove the double jump flag so no triple jumps
+            jumpCount += 1;
+            PlayerPrefs.SetInt("jumps", jumpCount);
             canDoubleJump = false;
         }
         
@@ -374,6 +410,8 @@ public class PlayerBrain : MonoBehaviour
                     animator = this.GetComponentInChildren<Animator>();
                     animator.SetTrigger("jumpsquish");
                     // Sets a split-second walljumping var for doublejump checks
+                    wallJumpCount += 1;
+                    PlayerPrefs.SetInt("walljumps", wallJumpCount);
                     wallJumping = true;
                 }
 
@@ -389,6 +427,8 @@ public class PlayerBrain : MonoBehaviour
                     animator = this.GetComponentInChildren<Animator>();
                     animator.SetTrigger("jumpsquish");
                     // Sets a split-second walljumping var for doublejump checks
+                    wallJumpCount += 1;
+                    PlayerPrefs.SetInt("walljumps", wallJumpCount);
                     wallJumping = true;
                 }
 
@@ -511,7 +551,7 @@ public class PlayerBrain : MonoBehaviour
             //Play landing sound and animation once
             if (grounded == false)
             {
-                audioSource.PlayOneShot(groundLand, 0.5F);
+                audioSource.PlayOneShot(groundLand, 0.3F);
                 // set animation
                 animator = this.GetComponentInChildren<Animator>();
                 animator.SetInteger("jump", 0);
@@ -708,7 +748,7 @@ public class PlayerBrain : MonoBehaviour
         spawnShield(shieldX, this.transform.position.y, shieldD);
 
         // Closeup audio + var changes
-        audioSource.PlayOneShot(shieldthrow, 0.6F);
+        audioSource.PlayOneShot(shieldthrow, 0.4F);
         switchCase = true;
 
         // Play throw animation
@@ -737,9 +777,11 @@ public class PlayerBrain : MonoBehaviour
 
         // Spawns a shield at the shield direction
         spawnShield(shieldX, this.transform.position.y, shieldD);
+        shieldsThrownCount += 1;
+        PlayerPrefs.SetInt("shieldsThrown", shieldsThrownCount);
 
         // Closeup audio + var changes
-        audioSource.PlayOneShot(shieldthrow, 0.6F);
+        audioSource.PlayOneShot(shieldthrow, 0.4F);
         switchCase = true;
 
         // Play throw animation
@@ -769,7 +811,7 @@ public class PlayerBrain : MonoBehaviour
                }
 
                shieldsOut = 0;
-                audioSource.PlayOneShot(reload, 0.7F);
+                audioSource.PlayOneShot(reload, 1.2F);
                 yield break;
             }
 

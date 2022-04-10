@@ -9,13 +9,13 @@ EditorBuildSettings:
     path: Assets/Scenes/MainMenu.unity
     guid: cf8ae85d192251342a37b7ee64603c0c
   - enabled: 1
-    path: Assets/Scenes/Tutorial.unity
+    path: Assets/Scenes/TutorialOld.unity
     guid: 702a5ac0134313c42bf78fbd55ce29d0
   - enabled: 1
     path: Assets/Scenes/Wasteland.unity
     guid: 1c2604f1cead03a49bd1ac2ea0b3ad6e
   - enabled: 1
-    path: Assets/Scenes/Grotto.unity
+    path: Assets/Scenes/GrottoOld.unity
     guid: d67c775af2652cf4f9a6b6d468f88510
   - enabled: 1
     path: Assets/Scenes/Win.unity
