@@ -395,6 +395,18 @@ public class PlayerBrain : MonoBehaviour
             animator = this.GetComponentInChildren<Animator>();
             animator.SetBool("walking", false);
         }
+
+        //just gon put this here
+        if (touchingWall == true)
+        {
+            animator = this.GetComponentInChildren<Animator>();
+            animator.SetBool("sliding", true);
+        }
+        else if (touchingWall == false)
+        {
+            animator = this.GetComponentInChildren<Animator>();
+            animator.SetBool("sliding", false);
+        }
     }
 
     private void jumpAnim()
