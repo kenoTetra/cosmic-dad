@@ -80,6 +80,7 @@ public class PlayerBrain : MonoBehaviour
     // Reset Buffer for Shields
     private float resetHoldMax;
     private float resetCurrent;
+    [Space(10)]
 
     // SFX
     private AudioClip shieldthrow;
@@ -94,12 +95,22 @@ public class PlayerBrain : MonoBehaviour
     [HideInInspector]
     public float currentResetTime = 1f;
 
+    [Header("Death Checker")]
     // Death Checker
     public bool playerNaenae = false;
+    public bool playerDying = false;
+    public float deathTimeoutMax = 1.0f;
+    //[HideInInspector]
+    public float deathTimeoutLeft;
+    public GameObject currentCheckpoint;
+    [Space(10)]
 
     // Loadzone Hit Check
+    [HideInInspector]
     public bool loadZoneHit = false;
+    [Space(10)]
 
+    [Header("Player Stats")]
     // Checkers for Stats
     public int deathCount;
     public int shieldsThrownCount;
@@ -123,7 +134,6 @@ public class PlayerBrain : MonoBehaviour
     AudioSource audioSource;
     Animator animator;
     Coroutine lastCoroutine = null;
-    public GameObject currentCheckpoint;
 
     void Start()
     {
@@ -195,16 +205,21 @@ public class PlayerBrain : MonoBehaviour
         // Create the movement vector based on player input
         Vector2 moveVector = new Vector2(moveX, moveY);
 
-        // Call our movement functions
-        playerMove(moveVector);
-        flipSprite(moveX);
-        walkAnim(moveX);
-        playerJump(moveVector);
-        jumpAnim();
-        checkAirTime();
-        playerWall(moveVector);
-        throwShield();
-        
+        // Call our movement functions if the player is alive.
+        if(!playerDying) 
+        {
+            playerMove(moveVector);
+            flipSprite(moveX);
+            walkAnim(moveX);
+            playerJump(moveVector);
+            jumpAnim();
+            checkAirTime();
+            playerWall(moveVector);
+            throwShield();
+        }
+
+        // Check for player death
+        playerDeath();
 
         // Stop the floor despawning
         clampVelocity(clampNumber);
@@ -249,11 +264,11 @@ public class PlayerBrain : MonoBehaviour
         if (col.gameObject.CompareTag("Hazard"))
         {
             print ("Hazard hit! " + col.gameObject.name);
-            this.transform.position = currentCheckpoint.transform.position;
             playerNaenae = true;
             audioSource.PlayOneShot(death, 0.7F);
             deathCount += 1;
             PlayerPrefs.SetInt("deaths", deathCount);
+            playerDying = true;
         }
 
         // Walk into a TriggerShieldsIncrease zone is a one time use--
@@ -537,6 +552,39 @@ public class PlayerBrain : MonoBehaviour
             totalAirTime += Time.deltaTime;
         }
     }
+
+    private void deathTimer()
+    {
+        // If the player isn't dying, keep their timer at max
+        if(!playerDying)
+        {
+            deathTimeoutLeft = deathTimeoutMax;
+        }
+
+        // Otherwise, start decreasing their death timer.
+        else 
+        {
+            deathTimeoutLeft -= Time.deltaTime;
+        }
+    }
+
+    private void playerDeath()
+    {
+        deathTimer();
+
+        if(playerDying)
+        {
+            animator = this.GetComponentInChildren<Animator>();
+            animator.SetBool("dying", true);
+        }
+
+        if(deathTimeoutLeft <= 0)
+        {
+            this.transform.position = currentCheckpoint.transform.position;
+            playerDying = false;
+        }
+    }
+    
 
     private void coyoteTime()
     {
