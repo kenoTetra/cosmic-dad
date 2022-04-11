@@ -594,6 +594,7 @@ public class PlayerBrain : MonoBehaviour
         {
             this.transform.position = currentCheckpoint.transform.position;
             playerDying = false;
+            animator.SetBool("dying", false);
         }
     }
     
