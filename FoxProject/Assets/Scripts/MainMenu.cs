@@ -44,14 +44,22 @@ public class MainMenu : MonoBehaviour
         SceneManager.LoadScene(levelIndex);
     }
 
-    public void openOptions()
+    public void openSettings()
     {
-
+        SettingsPanel.SetActive(true);
+        MainPanel.SetActive(false);
     }
 
-    public void closeOptions()
+    public void openCredits()
     {
+        CreditsPanel.SetActive(true);
+        MainPanel.SetActive(false);
+    }
 
+    public void closeCredits()
+    {
+        CreditsPanel.SetActive(false);
+        MainPanel.SetActive(true);
     }
 
     public void quitGame()
