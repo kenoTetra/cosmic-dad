@@ -520,8 +520,6 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
-<<<<<<< Updated upstream
-=======
 --- !u!1101 &-3041741610519568120
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -544,7 +542,6 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 1
->>>>>>> Stashed changes
 --- !u!1102 &-2775212443248066923
 AnimatorState:
   serializedVersion: 6
@@ -1309,6 +1306,7 @@ AnimatorState:
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
+  - {fileID: -3041741610519568120}
   - {fileID: 5704171345228175813}
   - {fileID: 153172415805585307}
   m_StateMachineBehaviours: []
