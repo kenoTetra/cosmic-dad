@@ -135,12 +135,21 @@ public class PlayerBrain : MonoBehaviour
         floorLayerMask = (LayerMask.GetMask("Ground", "Shield"));
         shieldLayerMask = (LayerMask.GetMask("Shield"));
 
+<<<<<<< Updated upstream
         /* Particle Systems for sliding.
         slideLeft = GameObject.Find("Sliding Left");
         slideRight = GameObject.Find("Sliding Right");
         slideLeftParticles = slideLeft.GetComponent<ParticleSystem>();
         slideRightParticles = slideRight.GetComponent<ParticleSystem>();
         */
+=======
+        // Sets stats values
+        jumpCount = PlayerPrefs.GetInt("jumps");
+        wallJumpCount = PlayerPrefs.GetInt("walljumps");
+        shieldsThrownCount = PlayerPrefs.GetInt("shieldsThrown");
+        deathCount = PlayerPrefs.GetInt("deaths");
+
+>>>>>>> Stashed changes
 
         // Sets stats values
         jumpCount = PlayerPrefs.GetInt("jumps");
@@ -165,6 +174,15 @@ public class PlayerBrain : MonoBehaviour
         {
             shieldSize = shieldsList[0].transform.localScale.x;
         }
+
+        // Load stored Timer variables.
+        time = PlayerPrefs.GetInt("time");
+        min = PlayerPrefs.GetInt("min");
+        sec = PlayerPrefs.GetInt("sec");
+        msec = PlayerPrefs.GetInt("msec");
+
+        // Start the Timer
+        StartCoroutine("stopWatch");
 
         //Load Sound Effects
         shieldthrow = (AudioClip)Resources.Load("SFX/shieldthrow");
@@ -287,6 +305,11 @@ public class PlayerBrain : MonoBehaviour
         // Hit a loadzone to advance level.
         if (col.gameObject.CompareTag("Loadzone"))
         {
+            StopCoroutine(StartCoroutine("stopWatch"));
+            PlayerPrefs.SetInt("time", (int)time);
+            PlayerPrefs.SetInt("min", (int)min);
+            PlayerPrefs.SetInt("sec", (int)sec);
+            PlayerPrefs.SetInt("msec", (int)msec);
             loadZoneHit = true;
         }
     }
@@ -891,6 +914,18 @@ public class PlayerBrain : MonoBehaviour
         foreach(GameObject shieldID in GameObject.FindGameObjectsWithTag(Tag)) 
         {
              listToAddTo.Add(shieldID);
+        }
+    }
+
+    IEnumerator stopWatch()
+    {
+        while(true)
+        {
+            time += Time.deltaTime;
+            msec = (int)((time - (int)time )* 100);
+            sec = (int)(time % 60);
+            min = (int)(time / 60 % 60);
+            yield return null;
         }
     }
 }

@@ -7,6 +7,8 @@ public class MainMenu : MonoBehaviour
 {
     public Animator transition;
     public float transitionTime = 0.75f;
+<<<<<<< Updated upstream
+=======
     public GameObject MainPanel;
     public GameObject SettingsPanel;
     public GameObject CreditsPanel;
@@ -15,7 +17,18 @@ public class MainMenu : MonoBehaviour
     {
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
+
+        // reset stats when hitting the main menu.
+        PlayerPrefs.SetInt("time", 0);
+        PlayerPrefs.SetInt("min", 0);
+        PlayerPrefs.SetInt("sec", 0);
+        PlayerPrefs.SetInt("msec", 0);
+        PlayerPrefs.SetInt("deaths", 0);
+        PlayerPrefs.SetInt("shieldsThrown", 0);
+        PlayerPrefs.SetInt("jumps", 0);
+        PlayerPrefs.SetInt("walljumps", 0);
     }
+>>>>>>> Stashed changes
 
     public void startGame()
     {
@@ -34,22 +47,14 @@ public class MainMenu : MonoBehaviour
         SceneManager.LoadScene(levelIndex);
     }
 
-    public void openSettings()
+    public void openOptions()
     {
-        SettingsPanel.SetActive(true);
-        MainPanel.SetActive(false);
+
     }
 
-    public void openCredits()
+    public void closeOptions()
     {
-        CreditsPanel.SetActive(true);
-        MainPanel.SetActive(false);
-    }
 
-    public void closeCredits()
-    {
-        CreditsPanel.SetActive(false);
-        MainPanel.SetActive(true);
     }
 
     public void quitGame()

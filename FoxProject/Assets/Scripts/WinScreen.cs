@@ -12,12 +12,23 @@ public class WinScreen : MonoBehaviour
     public TextMeshProUGUI walljumps;
     public TextMeshProUGUI shieldsThrown;
     public TextMeshProUGUI deaths;
+    public TextMeshProUGUI timer;
+    private int min;
+    private int sec;
+    private int msec;
 
     void Start()
     {
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
 
+        // Get timer variables
+        min = PlayerPrefs.GetInt("min");
+        sec = PlayerPrefs.GetInt("sec");
+        msec = PlayerPrefs.GetInt("msec");
+
+        // Set Stats
+        timer.text = string.Format("{0:00}:{1:00}:{2:00}",min,sec,msec);
         jumps.text = (PlayerPrefs.GetInt("jumps")).ToString();
         walljumps.text = (PlayerPrefs.GetInt("walljumps")).ToString();
         shieldsThrown.text = (PlayerPrefs.GetInt("shieldsThrown")).ToString();
