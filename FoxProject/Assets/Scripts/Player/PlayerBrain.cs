@@ -135,21 +135,12 @@ public class PlayerBrain : MonoBehaviour
         floorLayerMask = (LayerMask.GetMask("Ground", "Shield"));
         shieldLayerMask = (LayerMask.GetMask("Shield"));
 
-<<<<<<< Updated upstream
-        /* Particle Systems for sliding.
-        slideLeft = GameObject.Find("Sliding Left");
-        slideRight = GameObject.Find("Sliding Right");
-        slideLeftParticles = slideLeft.GetComponent<ParticleSystem>();
-        slideRightParticles = slideRight.GetComponent<ParticleSystem>();
-        */
-=======
         // Sets stats values
         jumpCount = PlayerPrefs.GetInt("jumps");
         wallJumpCount = PlayerPrefs.GetInt("walljumps");
         shieldsThrownCount = PlayerPrefs.GetInt("shieldsThrown");
         deathCount = PlayerPrefs.GetInt("deaths");
 
->>>>>>> Stashed changes
 
         // Sets stats values
         jumpCount = PlayerPrefs.GetInt("jumps");

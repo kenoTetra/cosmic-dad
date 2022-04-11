@@ -7,8 +7,6 @@ public class MainMenu : MonoBehaviour
 {
     public Animator transition;
     public float transitionTime = 0.75f;
-<<<<<<< Updated upstream
-=======
     public GameObject MainPanel;
     public GameObject SettingsPanel;
     public GameObject CreditsPanel;
@@ -28,7 +26,6 @@ public class MainMenu : MonoBehaviour
         PlayerPrefs.SetInt("jumps", 0);
         PlayerPrefs.SetInt("walljumps", 0);
     }
->>>>>>> Stashed changes
 
     public void startGame()
     {
