@@ -268,6 +268,7 @@ public class PlayerBrain : MonoBehaviour
             audioSource.PlayOneShot(death, 0.7F);
             deathCount += 1;
             PlayerPrefs.SetInt("deaths", deathCount);
+            rb.velocity = (new Vector2(0, 0));
             playerDying = true;
         }
 
@@ -866,7 +867,7 @@ public class PlayerBrain : MonoBehaviour
 
     IEnumerator shieldReset()
     {
-        currentResetTime = 1f;
+        currentResetTime = 0.5f;
 
         if(Input.GetKeyUp(resetKey))
         {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.UI;
+using System.Linq;
 
 public class SettingsMenu : MonoBehaviour
 {
@@ -19,19 +20,29 @@ public class SettingsMenu : MonoBehaviour
 
         // Clear out the dropdown's default A, B...
         resolutionDropdown.ClearOptions();
+        
 
         // Turn the resolutions into a string list (can't take in the resolution array)
         List<string> resolutionOptions = new List<string>();
+
+        // Clear it out, y'know.
+        resolutionOptions.Clear();
 
         int currentResIndex = 0;
 
         for(int i = 0; i < resolutions.Length; i++)
         {
-            string option = resolutions[i].width + " x " + resolutions[i].height;
+            string option = resolutions[i].width + " x " + resolutions[i].height + " @" + resolutions[i].refreshRate + "Hz";
             resolutionOptions.Add(option);
-
+            /*
+            Sets the resolution in the Settings menu to the native screen size.
             if (resolutions[i].width == Screen.currentResolution.width &&
                 resolutions[i].height == Screen.currentResolution.height)
+            {
+                currentResIndex = i;
+            }
+            */
+            if (resolutions[i].width == Screen.width && resolutions[i].height == Screen.height)
             {
                 currentResIndex = i;
             }

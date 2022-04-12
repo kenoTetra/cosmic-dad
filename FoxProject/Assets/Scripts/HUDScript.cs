@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using TMPro;
 
 public class HUDScript : MonoBehaviour
@@ -48,7 +49,7 @@ public class HUDScript : MonoBehaviour
         }
 
         // Holding R over time fills a box around the shield. Lets go!
-        fillBar.fillAmount = 1 - playerScript.currentResetTime;
+        fillBar.fillAmount = 1 - playerScript.currentResetTime*2;
 
         // Show the max/current shields.
         currentShields.text = (playerScript.shieldsList.Count - playerScript.shieldsOut - 1).ToString();
@@ -96,14 +97,20 @@ public class HUDScript : MonoBehaviour
         MainPanel.SetActive(false);
         Time.timeScale = 1.0f;
         paused = false;
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     public void openSettings()
     {
         SettingsPanel.SetActive(true);
         MainPanel.SetActive(false);
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
+    }
+
+    public void gotoMainMenu()
+    {
+        // Loads the main menu
+        SceneManager.LoadScene(0);
     }
 
     public void quitGame()
