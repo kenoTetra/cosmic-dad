@@ -110,6 +110,7 @@ public class HUDScript : MonoBehaviour
     public void gotoMainMenu()
     {
         // Loads the main menu
+        Time.timeScale = 1.0f;
         SceneManager.LoadScene(0);
     }
 

@@ -40,6 +40,8 @@ public class MainMenu : MonoBehaviour
         // Wait until the animation finishes
         yield return new WaitForSeconds(transitionTime);
 
+        transition.SetTrigger("Return");
+
         // Load the other scene!
         SceneManager.LoadScene(levelIndex);
     }
